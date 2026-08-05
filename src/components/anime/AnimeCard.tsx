@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { memo, type ReactNode } from 'react';
+import { Link } from 'react-router-dom';
 
 import { getPreferredTitle } from '../../services/anilist/media';
 import type { AniListMedia } from '../../services/anilist/types';
@@ -44,34 +45,39 @@ export const AnimeCard = memo(function AnimeCard({
   const episodeCount = formatEpisodeCount(anime.episodes);
 
   return (
-    <motion.article
+    <motion.div
       aria-busy={isLoading}
-      aria-label={`${title}${anime.averageScore !== null ? `, score ${anime.averageScore}` : ''}`}
-      className="group relative overflow-hidden rounded-lg border border-border bg-surface shadow-lg shadow-black/20 outline-none transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-      tabIndex={0}
+      className="group relative overflow-hidden rounded-lg border border-border bg-surface shadow-lg shadow-black/20 transition-colors duration-200"
       transition={{ duration: 0.18, ease: 'easeOut' }}
-      whileFocus={{ y: -3, scale: 1.015 }}
       whileHover={{ y: -4, scale: 1.018 }}
     >
-      <AnimeImage alt={`${title} cover art`} src={coverImage} />
+      <Link
+        aria-label={`${title}${anime.averageScore !== null ? `, score ${anime.averageScore}` : ''}`}
+        className="block outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+        to={`/anime/${anime.id}`}
+      >
+        <article>
+          <AnimeImage alt={`${title} cover art`} src={coverImage} />
 
-      <div className="space-y-3 px-3 py-3">
-        <div className="flex items-start justify-between gap-2">
-          <h3 className="line-clamp-2 min-h-10 text-sm font-semibold leading-5 text-foreground">
-            {title}
-          </h3>
-          <span className="shrink-0 rounded-full bg-primary/15 px-2 py-1 text-xs font-semibold text-foreground">
-            {anime.averageScore ?? 'NR'}
-          </span>
-        </div>
+          <div className="space-y-3 px-3 py-3">
+            <div className="flex items-start justify-between gap-2">
+              <h3 className="line-clamp-2 min-h-10 text-sm font-semibold leading-5 text-foreground">
+                {title}
+              </h3>
+              <span className="shrink-0 rounded-full bg-primary/15 px-2 py-1 text-xs font-semibold text-foreground">
+                {anime.averageScore ?? 'NR'}
+              </span>
+            </div>
 
-        <div className="flex flex-wrap items-center gap-2 text-xs text-muted">
-          {episodeCount !== null ? <span>{episodeCount}</span> : null}
-          <span className="rounded-full border border-border px-2 py-1">
-            {formatStatus(anime.status)}
-          </span>
-        </div>
-      </div>
+            <div className="flex flex-wrap items-center gap-2 text-xs text-muted">
+              {episodeCount !== null ? <span>{episodeCount}</span> : null}
+              <span className="rounded-full border border-border px-2 py-1">
+                {formatStatus(anime.status)}
+              </span>
+            </div>
+          </div>
+        </article>
+      </Link>
 
       {isError ? (
         <div className="absolute inset-x-3 top-3 rounded-md bg-background/90 px-3 py-2 text-xs font-medium text-muted">
@@ -80,6 +86,6 @@ export const AnimeCard = memo(function AnimeCard({
       ) : null}
 
       {children}
-    </motion.article>
+    </motion.div>
   );
 });

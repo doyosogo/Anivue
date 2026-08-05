@@ -21,6 +21,30 @@ export function stripAniListHtml(description: string | null): string {
   );
 }
 
+export function getSanitizedDescriptionParagraphs(
+  description: string | null,
+): string[] {
+  if (description === null) {
+    return ['No description is available for this title yet.'];
+  }
+
+  const withLineBreaks = description.replace(/<br\s*\/?>/gi, '\n');
+  const sanitized =
+    typeof DOMParser !== 'undefined'
+      ? new DOMParser().parseFromString(withLineBreaks, 'text/html').body
+          .textContent
+      : withLineBreaks.replace(/<[^>]*>/g, '');
+
+  const paragraphs = (sanitized ?? '')
+    .split(/\n{1,}/)
+    .map((paragraph) => paragraph.replace(/\s+/g, ' ').trim())
+    .filter((paragraph) => paragraph.length > 0);
+
+  return paragraphs.length > 0
+    ? paragraphs
+    : ['No description is available for this title yet.'];
+}
+
 export function getFeaturedAnime(media: AniListMedia[]): AniListMedia | null {
   if (media.length === 0) {
     return null;
@@ -58,4 +82,28 @@ export function getPrimaryStudio(anime: AniListMedia): AniListStudio | null {
 
 export function formatMetadataValue(value: string | number | null): string {
   return value === null ? 'Unknown' : String(value);
+}
+
+export function formatAnimeStatus(status: string | null): string {
+  if (status === null) {
+    return 'Unknown';
+  }
+
+  return status
+    .toLowerCase()
+    .split('_')
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+}
+
+export function getTrailerEmbedUrl(anime: AniListMedia): string | null {
+  if (
+    anime.trailer?.id === null ||
+    anime.trailer?.id === undefined ||
+    anime.trailer.site?.toLowerCase() !== 'youtube'
+  ) {
+    return null;
+  }
+
+  return `https://www.youtube.com/embed/${encodeURIComponent(anime.trailer.id)}`;
 }

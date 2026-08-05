@@ -104,3 +104,67 @@ export const CURRENT_SEASON_ANIME_QUERY = `
     }
   }
 `;
+
+export const ANIME_DETAILS_QUERY = `
+  ${ANILIST_MEDIA_FRAGMENT}
+  query AnimeDetails($id: Int!) {
+    Media(id: $id, type: ANIME, isAdult: false) {
+      ...AnimeCatalogueMedia
+      source
+      tags {
+        id
+        name
+        rank
+        isGeneralSpoiler
+        isMediaSpoiler
+      }
+      characters(sort: ROLE, perPage: 12) {
+        edges {
+          role
+          node {
+            id
+            name {
+              full
+            }
+            image {
+              large
+              medium
+            }
+          }
+        }
+      }
+      staff(sort: RELEVANCE, perPage: 10) {
+        edges {
+          role
+          node {
+            id
+            name {
+              full
+            }
+            image {
+              large
+              medium
+            }
+          }
+        }
+      }
+      relations {
+        edges {
+          relationType(version: 2)
+          node {
+            ...AnimeCatalogueMedia
+          }
+        }
+      }
+      recommendations(sort: RATING_DESC, perPage: 12) {
+        nodes {
+          id
+          rating
+          mediaRecommendation {
+            ...AnimeCatalogueMedia
+          }
+        }
+      }
+    }
+  }
+`;

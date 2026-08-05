@@ -1,10 +1,19 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { MemoryRouter } from 'react-router-dom';
 import { describe, expect, it } from 'vitest';
 
 import { createAniListMediaFixture } from '../../services/anilist/test-fixtures';
 import { FeaturedHero } from './FeaturedHero';
 import { stripAniListHtml } from './featuredHeroUtils';
+
+function renderFeaturedHero(anime: ReturnType<typeof createAniListMediaFixture>) {
+  return render(
+    <MemoryRouter>
+      <FeaturedHero anime={anime} />
+    </MemoryRouter>,
+  );
+}
 
 describe('FeaturedHero', () => {
   it('falls back to cover art when the banner image is unavailable', () => {
@@ -18,7 +27,7 @@ describe('FeaturedHero', () => {
       },
     });
 
-    render(<FeaturedHero anime={anime} />);
+    renderFeaturedHero(anime);
 
     expect(screen.getByTestId('featured-hero-background')).toHaveStyle({
       backgroundImage: 'url(https://example.com/fallback-cover.jpg)',
@@ -27,7 +36,7 @@ describe('FeaturedHero', () => {
 
   it('opens the membership modal from Watch Now', async () => {
     const user = userEvent.setup();
-    render(<FeaturedHero anime={createAniListMediaFixture()} />);
+    renderFeaturedHero(createAniListMediaFixture());
 
     await user.click(screen.getByRole('button', { name: /watch .* now/i }));
 
@@ -42,7 +51,7 @@ describe('FeaturedHero', () => {
   it('disables the trailer button when no trailer is available', () => {
     const anime = createAniListMediaFixture({ trailer: null });
 
-    render(<FeaturedHero anime={anime} />);
+    renderFeaturedHero(anime);
 
     expect(
       screen.getByRole('button', { name: /trailer unavailable/i }),

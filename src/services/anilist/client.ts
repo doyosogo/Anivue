@@ -8,12 +8,29 @@ import {
 } from './errors';
 import type {
   AniListCoverImage,
+  AniListAnimeDetails,
+  AniListAnimeDetailsResponse,
+  AniListCharacter,
+  AniListCharacterConnection,
+  AniListCharacterEdge,
+  AniListCharacterImage,
+  AniListCharacterName,
   AniListMedia,
   AniListMediaTitle,
+  AniListMediaTag,
   AniListNextAiringEpisode,
   AniListPageInfo,
   AniListPageResponse,
+  AniListRecommendation,
+  AniListRecommendationConnection,
+  AniListRelationConnection,
+  AniListRelationEdge,
   AniListSeason,
+  AniListStaff,
+  AniListStaffConnection,
+  AniListStaffEdge,
+  AniListStaffImage,
+  AniListStaffName,
   AniListStudio,
   AniListStudioConnection,
   AniListTrailer,
@@ -30,6 +47,8 @@ type AniListRequestOptions<TVariables extends GraphQLVariables> = {
   variables: TVariables;
   signal?: AbortSignal;
 };
+
+type AniListRequestParser<TData> = (data: unknown) => TData;
 
 function readNumericHeader(headers: Headers, name: string): number | null {
   const value = headers.get(name);
@@ -300,6 +319,200 @@ function parseMedia(value: unknown): AniListMedia {
   };
 }
 
+function parseMediaTag(value: unknown): AniListMediaTag {
+  if (
+    !isRecord(value) ||
+    !isNumber(value.id) ||
+    !isString(value.name) ||
+    !isNumber(value.rank) ||
+    !isBoolean(value.isGeneralSpoiler) ||
+    !isBoolean(value.isMediaSpoiler)
+  ) {
+    throw new AniListParseError();
+  }
+
+  return {
+    id: value.id,
+    name: value.name,
+    rank: value.rank,
+    isGeneralSpoiler: value.isGeneralSpoiler,
+    isMediaSpoiler: value.isMediaSpoiler,
+  };
+}
+
+function parseCharacterName(value: unknown): AniListCharacterName {
+  if (!isRecord(value) || !isNullableString(value.full)) {
+    throw new AniListParseError();
+  }
+
+  return { full: value.full };
+}
+
+function parseCharacterImage(value: unknown): AniListCharacterImage {
+  if (
+    !isRecord(value) ||
+    !isNullableString(value.large) ||
+    !isNullableString(value.medium)
+  ) {
+    throw new AniListParseError();
+  }
+
+  return { large: value.large, medium: value.medium };
+}
+
+function parseCharacter(value: unknown): AniListCharacter {
+  if (!isRecord(value) || !isNumber(value.id)) {
+    throw new AniListParseError();
+  }
+
+  return {
+    id: value.id,
+    name: parseCharacterName(value.name),
+    image: parseCharacterImage(value.image),
+  };
+}
+
+function parseCharacterEdge(value: unknown): AniListCharacterEdge {
+  if (!isRecord(value) || !isNullableString(value.role)) {
+    throw new AniListParseError();
+  }
+
+  return {
+    role: value.role,
+    node: parseCharacter(value.node),
+  };
+}
+
+function parseCharacterConnection(value: unknown): AniListCharacterConnection {
+  if (!isRecord(value) || !Array.isArray(value.edges)) {
+    throw new AniListParseError();
+  }
+
+  return { edges: value.edges.map(parseCharacterEdge) };
+}
+
+function parseStaffName(value: unknown): AniListStaffName {
+  if (!isRecord(value) || !isNullableString(value.full)) {
+    throw new AniListParseError();
+  }
+
+  return { full: value.full };
+}
+
+function parseStaffImage(value: unknown): AniListStaffImage {
+  if (
+    !isRecord(value) ||
+    !isNullableString(value.large) ||
+    !isNullableString(value.medium)
+  ) {
+    throw new AniListParseError();
+  }
+
+  return { large: value.large, medium: value.medium };
+}
+
+function parseStaff(value: unknown): AniListStaff {
+  if (!isRecord(value) || !isNumber(value.id)) {
+    throw new AniListParseError();
+  }
+
+  return {
+    id: value.id,
+    name: parseStaffName(value.name),
+    image: parseStaffImage(value.image),
+  };
+}
+
+function parseStaffEdge(value: unknown): AniListStaffEdge {
+  if (!isRecord(value) || !isNullableString(value.role)) {
+    throw new AniListParseError();
+  }
+
+  return {
+    role: value.role,
+    node: parseStaff(value.node),
+  };
+}
+
+function parseStaffConnection(value: unknown): AniListStaffConnection {
+  if (!isRecord(value) || !Array.isArray(value.edges)) {
+    throw new AniListParseError();
+  }
+
+  return { edges: value.edges.map(parseStaffEdge) };
+}
+
+function parseRelationEdge(value: unknown): AniListRelationEdge {
+  if (!isRecord(value) || !isNullableString(value.relationType)) {
+    throw new AniListParseError();
+  }
+
+  return {
+    relationType: value.relationType,
+    node: parseMedia(value.node),
+  };
+}
+
+function parseRelationConnection(value: unknown): AniListRelationConnection {
+  if (!isRecord(value) || !Array.isArray(value.edges)) {
+    throw new AniListParseError();
+  }
+
+  return { edges: value.edges.map(parseRelationEdge) };
+}
+
+function parseRecommendation(value: unknown): AniListRecommendation {
+  if (
+    !isRecord(value) ||
+    !isNumber(value.id) ||
+    !isNumber(value.rating) ||
+    !(value.mediaRecommendation === null || isRecord(value.mediaRecommendation))
+  ) {
+    throw new AniListParseError();
+  }
+
+  return {
+    id: value.id,
+    rating: value.rating,
+    mediaRecommendation:
+      value.mediaRecommendation === null
+        ? null
+        : parseMedia(value.mediaRecommendation),
+  };
+}
+
+function parseRecommendationConnection(
+  value: unknown,
+): AniListRecommendationConnection {
+  if (!isRecord(value) || !Array.isArray(value.nodes)) {
+    throw new AniListParseError();
+  }
+
+  return { nodes: value.nodes.map(parseRecommendation) };
+}
+
+function parseAnimeDetails(value: unknown): AniListAnimeDetails {
+  const media = parseMedia(value);
+
+  if (
+    !isRecord(value) ||
+    !isNullableString(value.source) ||
+    !Array.isArray(value.tags)
+  ) {
+    throw new AniListParseError();
+  }
+
+  return {
+    ...media,
+    source: value.source,
+    tags: value.tags.map(parseMediaTag),
+    characters: parseCharacterConnection(value.characters),
+    staff: parseStaffConnection(value.staff),
+    relations: parseRelationConnection(value.relations),
+    recommendations: parseRecommendationConnection(value.recommendations),
+  };
+}
+
 function parsePageInfo(value: unknown): AniListPageInfo {
   if (
     !isRecord(value) ||
@@ -332,6 +545,18 @@ export function parsePaginatedMediaResult(value: unknown): PaginatedMediaResult 
   };
 }
 
+export function parseAnimeDetailsResponse(
+  value: unknown,
+): AniListAnimeDetailsResponse {
+  if (!isRecord(value) || !(value.Media === null || isRecord(value.Media))) {
+    throw new AniListParseError();
+  }
+
+  return {
+    Media: value.Media === null ? null : parseAnimeDetails(value.Media),
+  };
+}
+
 async function parseJsonResponse(response: Response): Promise<unknown> {
   try {
     return await response.json();
@@ -340,13 +565,17 @@ async function parseJsonResponse(response: Response): Promise<unknown> {
   }
 }
 
-export async function requestAniListPage<
+export async function requestAniListData<
+  TData,
   TVariables extends GraphQLVariables,
 >({
   query,
   variables,
   signal,
-}: AniListRequestOptions<TVariables>): Promise<AniListPageResponse> {
+  parseData,
+}: AniListRequestOptions<TVariables> & {
+  parseData: AniListRequestParser<TData>;
+}): Promise<TData> {
   let response: Response;
 
   try {
@@ -381,7 +610,23 @@ export async function requestAniListPage<
     throw new AniListGraphQLError(envelope.errors, response.status);
   }
 
-  return {
-    Page: parsePaginatedMediaResult(envelope.data),
-  };
+  return parseData(envelope.data);
+}
+
+export function requestAniListPage<TVariables extends GraphQLVariables>(
+  options: AniListRequestOptions<TVariables>,
+): Promise<AniListPageResponse> {
+  return requestAniListData({
+    ...options,
+    parseData: (data) => ({ Page: parsePaginatedMediaResult(data) }),
+  });
+}
+
+export function requestAniListAnimeDetails<TVariables extends GraphQLVariables>(
+  options: AniListRequestOptions<TVariables>,
+): Promise<AniListAnimeDetailsResponse> {
+  return requestAniListData({
+    ...options,
+    parseData: parseAnimeDetailsResponse,
+  });
 }

@@ -1,4 +1,5 @@
 import { render, screen } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 import { describe, expect, it } from 'vitest';
 
 import { createAniListMediaFixture } from '../../services/anilist/test-fixtures';
@@ -14,11 +15,15 @@ describe('AnimeCard', () => {
       },
     });
 
-    render(<AnimeCard anime={anime} />);
+    render(
+      <MemoryRouter>
+        <AnimeCard anime={anime} />
+      </MemoryRouter>,
+    );
 
     expect(screen.getByText('Romaji Fallback')).toBeInTheDocument();
     expect(
-      screen.getByRole('article', { name: /romaji fallback/i }),
+      screen.getByRole('link', { name: /romaji fallback/i }),
     ).toBeInTheDocument();
   });
 });

@@ -80,6 +80,94 @@ export type AniListMedia = {
   nextAiringEpisode: AniListNextAiringEpisode | null;
 };
 
+export type AniListMediaTag = {
+  id: number;
+  name: string;
+  rank: number;
+  isGeneralSpoiler: boolean;
+  isMediaSpoiler: boolean;
+};
+
+export type AniListCharacterName = {
+  full: string | null;
+};
+
+export type AniListCharacterImage = {
+  large: string | null;
+  medium: string | null;
+};
+
+export type AniListCharacter = {
+  id: number;
+  name: AniListCharacterName;
+  image: AniListCharacterImage;
+};
+
+export type AniListCharacterEdge = {
+  role: string | null;
+  node: AniListCharacter;
+};
+
+export type AniListCharacterConnection = {
+  edges: AniListCharacterEdge[];
+};
+
+export type AniListStaffName = {
+  full: string | null;
+};
+
+export type AniListStaffImage = {
+  large: string | null;
+  medium: string | null;
+};
+
+export type AniListStaff = {
+  id: number;
+  name: AniListStaffName;
+  image: AniListStaffImage;
+};
+
+export type AniListStaffEdge = {
+  role: string | null;
+  node: AniListStaff;
+};
+
+export type AniListStaffConnection = {
+  edges: AniListStaffEdge[];
+};
+
+export type AniListRelationEdge = {
+  relationType: string | null;
+  node: AniListMedia;
+};
+
+export type AniListRelationConnection = {
+  edges: AniListRelationEdge[];
+};
+
+export type AniListRecommendation = {
+  id: number;
+  rating: number;
+  mediaRecommendation: AniListMedia | null;
+};
+
+export type AniListRecommendationConnection = {
+  nodes: AniListRecommendation[];
+};
+
+export type AniListAnimeDetails = AniListMedia & {
+  source: string | null;
+  tags: AniListMediaTag[];
+  characters: AniListCharacterConnection;
+  staff: AniListStaffConnection;
+  relations: AniListRelationConnection;
+  recommendations: AniListRecommendationConnection;
+};
+
+export type AniListAnimeDetailsResponse = {
+  Media: AniListAnimeDetails | null;
+};
+
 export type AniListPageInfo = {
   total: number | null;
   currentPage: number;
@@ -105,4 +193,8 @@ export type AnimeCatalogueVariables = {
 export type CurrentSeasonAnimeVariables = AnimeCatalogueVariables & {
   season: AniListSeason;
   seasonYear: number;
+};
+
+export type AnimeDetailsVariables = {
+  id: number;
 };

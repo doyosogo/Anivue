@@ -1,6 +1,7 @@
 import { Info, Play, Star, Video } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { getPreferredTitle } from '../../services/anilist/media';
 import type { AniListMedia } from '../../services/anilist/types';
@@ -8,8 +9,10 @@ import { Button } from '../common/Button';
 import { Modal } from '../common/Modal';
 import {
   formatMetadataValue,
+  formatAnimeStatus,
   getHeroImage,
   getPrimaryStudio,
+  getTrailerEmbedUrl,
   stripAniListHtml,
 } from './featuredHeroUtils';
 
@@ -17,34 +20,11 @@ type FeaturedHeroProps = {
   anime: AniListMedia | null;
 };
 
-type HeroModal = 'membership' | 'trailer' | 'info' | null;
-
-function formatStatus(status: string | null): string {
-  if (status === null) {
-    return 'Unknown';
-  }
-
-  return status
-    .toLowerCase()
-    .split('_')
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(' ');
-}
-
-function getTrailerEmbedUrl(anime: AniListMedia): string | null {
-  if (
-    anime.trailer?.id === null ||
-    anime.trailer?.id === undefined ||
-    anime.trailer.site?.toLowerCase() !== 'youtube'
-  ) {
-    return null;
-  }
-
-  return `https://www.youtube.com/embed/${encodeURIComponent(anime.trailer.id)}`;
-}
+type HeroModal = 'membership' | 'trailer' | null;
 
 export function FeaturedHero({ anime }: FeaturedHeroProps) {
   const [activeModal, setActiveModal] = useState<HeroModal>(null);
+  const navigate = useNavigate();
 
   const heroData = useMemo(() => {
     if (anime === null) {
@@ -89,20 +69,6 @@ export function FeaturedHero({ anime }: FeaturedHeroProps) {
   }
 
   const genres = anime.genres.slice(0, 3);
-  const metadataItems: Array<[string, string | number | null]> = [
-    ['Format', anime.format],
-    ['Status', formatStatus(anime.status)],
-    ['Season', anime.season],
-    ['Year', anime.seasonYear],
-    ['Episodes', anime.episodes],
-    ['Duration', anime.duration === null ? null : `${anime.duration} min`],
-    ['Average Score', anime.averageScore],
-    ['Popularity', anime.popularity],
-    ['Trending', anime.trending],
-    ['Favourites', anime.favourites],
-    ['Studio', heroData.studio?.name ?? null],
-    ['AniList', anime.siteUrl],
-  ];
 
   return (
     <motion.section
@@ -154,7 +120,7 @@ export function FeaturedHero({ anime }: FeaturedHeroProps) {
             <span>{anime.episodes === null ? 'Episodes TBA' : `${anime.episodes} episodes`}</span>
             <span>{formatMetadataValue(anime.season)}</span>
             <span>{formatMetadataValue(anime.seasonYear)}</span>
-            <span>{formatStatus(anime.status)}</span>
+            <span>{formatAnimeStatus(anime.status)}</span>
             {heroData.studio !== null ? <span>{heroData.studio.name}</span> : null}
           </div>
 
@@ -201,7 +167,7 @@ export function FeaturedHero({ anime }: FeaturedHeroProps) {
             </Button>
             <Button
               aria-label={`More information about ${heroData.title}`}
-              onClick={() => setActiveModal('info')}
+              onClick={() => navigate(`/anime/${anime.id}`)}
               variant="secondary"
             >
               <Info aria-hidden="true" size={17} />
@@ -241,25 +207,6 @@ export function FeaturedHero({ anime }: FeaturedHeroProps) {
         ) : null}
       </Modal>
 
-      <Modal
-        isOpen={activeModal === 'info'}
-        onClose={() => setActiveModal(null)}
-        title={`${heroData.title} Metadata`}
-      >
-        <dl className="grid gap-4 text-sm sm:grid-cols-2">
-          {metadataItems.map(([label, value]) => (
-            <div
-              className="rounded-md border border-border bg-background/35 p-3"
-              key={label}
-            >
-              <dt className="text-xs uppercase text-muted">{label}</dt>
-              <dd className="mt-1 break-words font-medium text-foreground">
-                {formatMetadataValue(value)}
-              </dd>
-            </div>
-          ))}
-        </dl>
-      </Modal>
     </motion.section>
   );
 }

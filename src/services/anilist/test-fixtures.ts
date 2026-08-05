@@ -1,4 +1,9 @@
-import type { AniListMedia, AniListPageResponse } from './types';
+import type {
+  AniListAnimeDetails,
+  AniListAnimeDetailsResponse,
+  AniListMedia,
+  AniListPageResponse,
+} from './types';
 
 export function createAniListMediaFixture(
   overrides: Partial<AniListMedia> = {},
@@ -64,6 +69,92 @@ export function createAniListPageFixture(
         perPage: 20,
       },
       media,
+    },
+  };
+}
+
+export function createAniListDetailsFixture(
+  overrides: Partial<AniListAnimeDetails> = {},
+): AniListAnimeDetailsResponse {
+  const baseMedia = createAniListMediaFixture();
+
+  return {
+    Media: {
+      ...baseMedia,
+      description:
+        'A <strong>brilliant</strong> adventure begins.<br>Its world expands across many mysteries.<br>Every choice has a cost.',
+      source: 'MANGA',
+      tags: [
+        {
+          id: 10,
+          name: 'Alchemy',
+          rank: 92,
+          isGeneralSpoiler: false,
+          isMediaSpoiler: false,
+        },
+      ],
+      characters: {
+        edges: [
+          {
+            role: 'MAIN',
+            node: {
+              id: 100,
+              name: { full: 'Edward Elric' },
+              image: {
+                large: 'https://example.com/edward-large.jpg',
+                medium: 'https://example.com/edward-medium.jpg',
+              },
+            },
+          },
+        ],
+      },
+      staff: {
+        edges: [
+          {
+            role: 'Director',
+            node: {
+              id: 200,
+              name: { full: 'Yasuhiro Irie' },
+              image: {
+                large: 'https://example.com/staff-large.jpg',
+                medium: 'https://example.com/staff-medium.jpg',
+              },
+            },
+          },
+        ],
+      },
+      relations: {
+        edges: [
+          {
+            relationType: 'SEQUEL',
+            node: createAniListMediaFixture({
+              id: 2,
+              title: {
+                english: 'Related Anime',
+                romaji: null,
+                native: null,
+              },
+            }),
+          },
+        ],
+      },
+      recommendations: {
+        nodes: [
+          {
+            id: 300,
+            rating: 98,
+            mediaRecommendation: createAniListMediaFixture({
+              id: 3,
+              title: {
+                english: 'Recommended Anime',
+                romaji: null,
+                native: null,
+              },
+            }),
+          },
+        ],
+      },
+      ...overrides,
     },
   };
 }

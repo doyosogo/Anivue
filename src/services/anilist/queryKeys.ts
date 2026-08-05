@@ -18,4 +18,5 @@ export const anilistQueryKeys = {
       'current-season',
       { page, perPage, season, seasonYear },
     ] as const,
+  details: (id: number) => [...anilistQueryKeys.all, 'details', id] as const,
 };
