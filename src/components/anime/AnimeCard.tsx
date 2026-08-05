@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 
 import { getPreferredTitle } from '../../services/anilist/media';
 import type { AniListMedia } from '../../services/anilist/types';
+import { MyListButton } from '../../features/my-list/components/MyListButton';
 import { AnimeImage } from './AnimeImage';
 
 type AnimeCardProps = {
@@ -84,6 +85,10 @@ export const AnimeCard = memo(function AnimeCard({
           Unable to load card data
         </div>
       ) : null}
+
+      <div className="absolute right-3 top-3 opacity-100 transition-opacity sm:opacity-0 sm:group-hover:opacity-100 sm:group-focus-within:opacity-100">
+        <MyListButton anime={anime} compact />
+      </div>
 
       {children}
     </motion.div>

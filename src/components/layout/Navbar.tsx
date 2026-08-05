@@ -11,6 +11,7 @@ import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { useAppShellStore } from '../../app/store/useAppShellStore';
 import { useDebouncedValue } from '../../hooks/useDebouncedValue';
 import { SEARCH_DEBOUNCE_MS, SEARCH_MIN_QUERY_LENGTH } from '../../features/search/config/searchFilters';
+import { useMyListStore } from '../../features/my-list/store/useMyListStore';
 
 const navItems = [
   { label: 'Home', to: '/' },
@@ -36,6 +37,7 @@ export function Navbar() {
   const inputRef = useRef<HTMLInputElement>(null);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchValue, setSearchValue] = useState(searchParams.get('q') ?? '');
+  const myListCount = useMyListStore((state) => Object.keys(state.items).length);
   const debouncedSearchValue = useDebouncedValue(
     searchValue,
     SEARCH_DEBOUNCE_MS,
@@ -106,8 +108,22 @@ export function Navbar() {
 
         <div className="hidden items-center gap-1 md:flex">
           {navItems.map((item) => (
-            <NavLink className={navLinkClass} key={item.to} to={item.to}>
-              {item.label}
+            <NavLink
+              aria-label={
+                item.to === '/my-list' && myListCount > 0
+                  ? `My List, ${myListCount} saved`
+                  : undefined
+              }
+              className={navLinkClass}
+              key={item.to}
+              to={item.to}
+            >
+              <span>{item.label}</span>
+              {item.to === '/my-list' && myListCount > 0 ? (
+                <span className="ml-2 rounded-full bg-primary/20 px-2 py-0.5 text-xs text-foreground">
+                  {myListCount}
+                </span>
+              ) : null}
             </NavLink>
           ))}
         </div>

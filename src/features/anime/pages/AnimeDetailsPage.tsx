@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { BookmarkPlus, Play, Video } from 'lucide-react';
+import { Play, Video } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
@@ -19,6 +19,7 @@ import { ErrorState } from '../../../components/common/ErrorState';
 import { HorizontalCarousel } from '../../../components/common/HorizontalCarousel';
 import { Modal } from '../../../components/common/Modal';
 import { SectionHeader } from '../../../components/common/SectionHeader';
+import { MyListButton } from '../../my-list/components/MyListButton';
 import { getPreferredTitle } from '../../../services/anilist/media';
 import type {
   AniListAnimeDetails,
@@ -202,14 +203,7 @@ function DetailsHero({ anime }: { anime: AniListAnimeDetails }) {
               <Video aria-hidden="true" size={17} />
               Watch Trailer
             </Button>
-            <Button
-              aria-label={`Add ${title} to My List`}
-              onClick={() => undefined}
-              variant="secondary"
-            >
-              <BookmarkPlus aria-hidden="true" size={17} />
-              Add to My List
-            </Button>
+            <MyListButton anime={anime} />
           </div>
         </div>
       </div>

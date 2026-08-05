@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { getPreferredTitle } from '../../services/anilist/media';
 import type { AniListMedia } from '../../services/anilist/types';
+import { MyListButton } from '../../features/my-list/components/MyListButton';
 import { Button } from '../common/Button';
 import { Modal } from '../common/Modal';
 import {
@@ -173,6 +174,7 @@ export function FeaturedHero({ anime }: FeaturedHeroProps) {
               <Info aria-hidden="true" size={17} />
               More Info
             </Button>
+            <MyListButton anime={anime} />
           </div>
         </motion.div>
       </div>
@@ -206,7 +208,6 @@ export function FeaturedHero({ anime }: FeaturedHeroProps) {
           </div>
         ) : null}
       </Modal>
-
     </motion.section>
   );
 }

@@ -1,8 +1,10 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { act, cleanup, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it } from 'vitest';
 import { MemoryRouter, Route, Routes, useLocation } from 'react-router-dom';
 
+import { createAniListMediaFixture } from '../../services/anilist/test-fixtures';
+import { resetMyListStoreForTest, useMyListStore } from '../../features/my-list/store/useMyListStore';
 import { Navbar } from './Navbar';
 
 function LocationDisplay() {
@@ -22,6 +24,14 @@ function renderNavbar() {
 }
 
 describe('Navbar search', () => {
+  afterEach(() => {
+    cleanup();
+    act(() => {
+      resetMyListStoreForTest();
+    });
+    window.localStorage.clear();
+  });
+
   it('navigates after debounced search input', async () => {
     const user = userEvent.setup();
 
@@ -47,5 +57,15 @@ describe('Navbar search', () => {
     await user.type(screen.getByLabelText('Search anime'), 'bleach{Enter}');
 
     expect(screen.getByTestId('location')).toHaveTextContent('/search?q=bleach');
+  });
+
+  it('shows the saved My List count', () => {
+    act(() => {
+      useMyListStore.getState().addToMyList(createAniListMediaFixture());
+    });
+
+    renderNavbar();
+
+    expect(screen.getByRole('link', { name: /my list, 1 saved/i })).toBeInTheDocument();
   });
 });

@@ -1,10 +1,11 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { render, screen, waitFor } from '@testing-library/react';
+import { act, cleanup, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { createAniListDetailsFixture } from '../../../services/anilist/test-fixtures';
+import { resetMyListStoreForTest, useMyListStore } from '../../my-list/store/useMyListStore';
 import { AnimeDetailsPage } from './AnimeDetailsPage';
 
 function renderAnimeDetailsPage(initialPath = '/anime/1') {
@@ -41,7 +42,12 @@ function mockDetailsResponse(title = 'Fullmetal Alchemist: Brotherhood') {
 
 describe('AnimeDetailsPage', () => {
   afterEach(() => {
+    cleanup();
     vi.unstubAllGlobals();
+    act(() => {
+      resetMyListStoreForTest();
+    });
+    window.localStorage.clear();
   });
 
   it('renders anime details from the AniList response', async () => {
@@ -139,5 +145,31 @@ describe('AnimeDetailsPage', () => {
     await waitFor(() =>
       expect(screen.getByLabelText(/loading anime details/i)).toBeInTheDocument(),
     );
+  });
+
+  it('adds loaded details to My List', async () => {
+    const user = userEvent.setup();
+    vi.stubGlobal(
+      'fetch',
+      vi.fn<typeof fetch>().mockResolvedValue(mockDetailsResponse()),
+    );
+
+    renderAnimeDetailsPage();
+
+    await screen.findByRole('heading', {
+      name: 'Fullmetal Alchemist: Brotherhood',
+    });
+    await user.click(
+      screen.getByRole('button', {
+        name: 'Add Fullmetal Alchemist: Brotherhood to My List',
+      }),
+    );
+
+    expect(
+      await screen.findByRole('button', {
+        name: 'Remove Fullmetal Alchemist: Brotherhood from My List',
+      }),
+    ).toBeInTheDocument();
+    expect(useMyListStore.getState().isInMyList(1)).toBe(true);
   });
 });

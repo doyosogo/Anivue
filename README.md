@@ -84,8 +84,10 @@ gracefully.
   characters, recommendations, relations, staff, and studios.
 - Search: URL-driven catalogue discovery at `/search` with debounced title
   queries, filters, sorting, pagination, and result cards that route to details.
+- My List: browser-only saved titles with local persistence, card controls,
+  details/hero integration, sorting, and clear confirmation.
 - Prototype actions: `Watch Now` opens the membership-required modal, trailers
-  open in an embed modal when available, and `Add to My List` is visual only.
+  open in an embed modal when available, and `Add to My List` persists locally.
 
 ## Search
 
@@ -107,6 +109,21 @@ Navbar and search-page text input is debounced before updating `/search`, while
 pressing Enter submits immediately. Search uses TanStack Query and the existing
 AniList Fetch client, passes cancellation signals through requests, and uses
 standard Previous/Next pagination through the `page` URL parameter.
+
+## My List
+
+My List does not require an account and does not use a backend. Saved titles are
+stored only in the current browser with Zustand persist under the
+`anivue-my-list` localStorage key. Clearing browser data removes the saved list.
+
+The persisted data is a compact catalogue snapshot rather than the full AniList
+details response. It stores stable rendering fields such as id, title, cover and
+banner images, score, episode count, status, format, season/year, genres, trailer
+summary, and date added. This lets `/my-list` render without issuing one AniList
+request per saved title.
+
+Persistence includes a version and a safe migration fallback so malformed or
+older local data does not crash the app.
 
 ## Development Scripts
 
