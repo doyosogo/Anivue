@@ -1,5 +1,4 @@
 import { motion } from 'framer-motion';
-import { Play, Video } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
@@ -11,15 +10,13 @@ import {
   getHeroImage,
   getPrimaryStudio,
   getSanitizedDescriptionParagraphs,
-  getTrailerEmbedUrl,
 } from '../../../components/anime/featuredHeroUtils';
-import { Button } from '../../../components/common/Button';
 import { EmptyState } from '../../../components/common/EmptyState';
 import { ErrorState } from '../../../components/common/ErrorState';
 import { HorizontalCarousel } from '../../../components/common/HorizontalCarousel';
-import { Modal } from '../../../components/common/Modal';
 import { SectionHeader } from '../../../components/common/SectionHeader';
 import { MyListButton } from '../../my-list/components/MyListButton';
+import { AnimeWatchActions } from '../../watch/components/AnimeWatchActions';
 import { getPreferredTitle } from '../../../services/anilist/media';
 import type {
   AniListAnimeDetails,
@@ -27,8 +24,6 @@ import type {
   AniListStaffEdge,
 } from '../../../services/anilist/types';
 import { useAnimeDetails } from '../hooks/useAnimeDetails';
-
-type DetailsModal = 'membership' | 'trailer' | null;
 
 type MetadataChipProps = {
   label: string;
@@ -120,13 +115,11 @@ function Description({ paragraphs }: { paragraphs: string[] }) {
 }
 
 function DetailsHero({ anime }: { anime: AniListAnimeDetails }) {
-  const [activeModal, setActiveModal] = useState<DetailsModal>(null);
   const title = getPreferredTitle(anime.title);
   const heroImage = getHeroImage(anime);
   const coverImage =
     anime.coverImage.extraLarge ?? anime.coverImage.large ?? anime.coverImage.medium;
   const studio = getPrimaryStudio(anime);
-  const trailerUrl = getTrailerEmbedUrl(anime);
   const metadata = [
     anime.format,
     anime.episodes === null ? null : `${anime.episodes} Episodes`,
@@ -183,60 +176,11 @@ function DetailsHero({ anime }: { anime: AniListAnimeDetails }) {
           </div>
 
           <div className="mt-7 flex flex-wrap gap-3">
-            <Button
-              aria-label={`Watch ${title} now`}
-              onClick={() => setActiveModal('membership')}
-            >
-              <Play aria-hidden="true" size={17} />
-              Watch Now
-            </Button>
-            <Button
-              aria-label={
-                trailerUrl === null
-                  ? `Trailer unavailable for ${title}`
-                  : `Watch trailer for ${title}`
-              }
-              disabled={trailerUrl === null}
-              onClick={() => setActiveModal('trailer')}
-              variant="secondary"
-            >
-              <Video aria-hidden="true" size={17} />
-              Watch Trailer
-            </Button>
+            <AnimeWatchActions anime={anime} />
             <MyListButton anime={anime} />
           </div>
         </div>
       </div>
-
-      <Modal
-        isOpen={activeModal === 'membership'}
-        onClose={() => setActiveModal(null)}
-        title="Membership Required"
-      >
-        <p className="text-sm leading-6 text-muted">
-          Episode playback is intentionally unavailable in this portfolio
-          prototype. This modal previews the future membership gate without
-          adding authentication, payments, or video hosting.
-        </p>
-      </Modal>
-
-      <Modal
-        isOpen={activeModal === 'trailer'}
-        onClose={() => setActiveModal(null)}
-        title={`${title} Trailer`}
-      >
-        {trailerUrl !== null ? (
-          <div className="aspect-video overflow-hidden rounded-lg border border-border bg-background">
-            <iframe
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              allowFullScreen
-              className="h-full w-full"
-              src={trailerUrl}
-              title={`${title} official trailer`}
-            />
-          </div>
-        ) : null}
-      </Modal>
     </motion.section>
   );
 }

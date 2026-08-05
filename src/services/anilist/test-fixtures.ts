@@ -38,7 +38,7 @@ export function createAniListMediaFixture(
       color: '#f5f5f5',
     },
     trailer: {
-      id: 'abc123',
+      id: 'abc123_DEF4',
       site: 'youtube',
       thumbnail: 'https://example.com/trailer.jpg',
     },

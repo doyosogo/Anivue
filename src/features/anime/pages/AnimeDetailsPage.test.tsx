@@ -172,4 +172,47 @@ describe('AnimeDetailsPage', () => {
     ).toBeInTheDocument();
     expect(useMyListStore.getState().isInMyList(1)).toBe(true);
   });
+
+  it('uses the shared membership action from loaded details', async () => {
+    const user = userEvent.setup();
+    vi.stubGlobal(
+      'fetch',
+      vi.fn<typeof fetch>().mockResolvedValue(mockDetailsResponse()),
+    );
+
+    renderAnimeDetailsPage();
+
+    await screen.findByRole('heading', {
+      name: 'Fullmetal Alchemist: Brotherhood',
+    });
+    await user.click(screen.getByRole('button', { name: /watch .* now/i }));
+
+    expect(
+      screen.getByRole('dialog', { name: /membership required/i }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(/membership registration and episode playback/i),
+    ).toBeInTheDocument();
+  });
+
+  it('uses the shared trailer action from loaded details', async () => {
+    const user = userEvent.setup();
+    vi.stubGlobal(
+      'fetch',
+      vi.fn<typeof fetch>().mockResolvedValue(mockDetailsResponse()),
+    );
+
+    renderAnimeDetailsPage();
+
+    await screen.findByRole('heading', {
+      name: 'Fullmetal Alchemist: Brotherhood',
+    });
+    await user.click(screen.getByRole('button', { name: /watch trailer/i }));
+
+    expect(
+      screen.getByTitle(
+        'Fullmetal Alchemist: Brotherhood official promotional trailer',
+      ),
+    ).toBeInTheDocument();
+  });
 });

@@ -50,10 +50,10 @@ describe('FeaturedHero', () => {
     await user.click(screen.getByRole('button', { name: /watch .* now/i }));
 
     expect(
-      screen.getByRole('dialog', { name: 'Membership Required' }),
+      screen.getByRole('dialog', { name: /membership required/i }),
     ).toBeInTheDocument();
     expect(
-      screen.getByText(/intentionally unavailable in this portfolio prototype/i),
+      screen.getByText(/membership registration and episode playback/i),
     ).toBeInTheDocument();
   });
 

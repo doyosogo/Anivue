@@ -95,15 +95,3 @@ export function formatAnimeStatus(status: string | null): string {
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(' ');
 }
-
-export function getTrailerEmbedUrl(anime: AniListMedia): string | null {
-  if (
-    anime.trailer?.id === null ||
-    anime.trailer?.id === undefined ||
-    anime.trailer.site?.toLowerCase() !== 'youtube'
-  ) {
-    return null;
-  }
-
-  return `https://www.youtube.com/embed/${encodeURIComponent(anime.trailer.id)}`;
-}

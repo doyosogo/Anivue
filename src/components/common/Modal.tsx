@@ -38,7 +38,7 @@ export function Modal({ children, isOpen, onClose, title }: ModalProps) {
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
 
-    window.setTimeout(() => {
+    const focusTimerId = window.setTimeout(() => {
       const dialog = dialogRef.current;
       if (dialog === null) {
         return;
@@ -48,6 +48,7 @@ export function Modal({ children, isOpen, onClose, title }: ModalProps) {
     }, 0);
 
     return () => {
+      window.clearTimeout(focusTimerId);
       document.body.style.overflow = previousOverflow;
       if (previousActiveElement instanceof HTMLElement) {
         previousActiveElement.focus();

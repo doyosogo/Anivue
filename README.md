@@ -10,9 +10,9 @@ Anivue does not host anime episodes. Future playback experiences are expected to
 use a membership-lock concept that points users toward appropriate licensed
 access rather than storing or serving video content directly.
 
-The current `Watch Now` action intentionally opens a prototype
-`Membership Required` modal. It demonstrates product direction without adding
-authentication, pricing, payments, or playback.
+The current `Watch Now` action intentionally opens a reusable membership-lock
+modal. It demonstrates product direction without adding authentication,
+registration, pricing, payments, real subscription activation, or playback.
 
 ## Tech Stack
 
@@ -42,8 +42,11 @@ src/
   features/
     browse/           Browse route boundary
     home/             Home route boundary
+    membership/       Reusable membership-lock modal and prototype disclosure
     my-list/          My List route boundary
     not-found/        404 route boundary
+    trailer/          Official trailer modal, provider validation, and embed utils
+    watch/            Shared Watch Now and Watch Trailer controls
   services/
     anilist/          Typed GraphQL client, operations, errors, and utilities
   styles/
@@ -70,12 +73,11 @@ AniList data and images remain owned or managed by their respective sources.
 Anivue uses AniList as a catalogue source and does not claim endorsement by
 AniList.
 
-Planned trailer support should use official trailer metadata where available,
-without treating trailers as hosted Anivue playback content.
-
-The featured hero can open official YouTube trailer embeds when AniList provides
-trailer metadata. If no trailer exists, the trailer action is disabled
-gracefully.
+Official trailer support uses AniList trailer metadata where available, without
+treating trailers as hosted Anivue playback content. Anivue currently supports
+validated YouTube trailer IDs only, renders privacy-conscious
+`youtube-nocookie.com` embeds, and rejects unsupported providers, malformed IDs,
+or arbitrary URLs.
 
 ## Current Progress
 
@@ -86,8 +88,25 @@ gracefully.
   queries, filters, sorting, pagination, and result cards that route to details.
 - My List: browser-only saved titles with local persistence, card controls,
   details/hero integration, sorting, and clear confirmation.
-- Prototype actions: `Watch Now` opens the membership-required modal, trailers
-  open in an embed modal when available, and `Add to My List` persists locally.
+- Prototype actions: `Watch Now` opens the shared membership-required modal,
+  trailers open in the shared official-trailer modal when supported, and `Add to
+  My List` persists locally.
+
+## Membership and Trailers
+
+The membership lock is a non-commercial prototype experience. It explains that
+episode playback and membership registration are intentionally unavailable and
+that Anivue does not host copyrighted anime episodes. No real purchase,
+checkout, account creation, or payment flow exists.
+
+Shared watch controls live in `features/watch` and are used by both the
+homepage featured hero and anime details page. The controls open
+`MembershipRequiredModal` for locked playback and `TrailerModal` for supported
+official promotional trailers.
+
+Trailer embeds are created only after provider and ID validation. Supported
+trailer metadata may render in an accessible modal iframe; missing, unsupported,
+or malformed trailer metadata leaves the trailer action disabled.
 
 ## Search
 

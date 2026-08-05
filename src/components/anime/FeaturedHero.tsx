@@ -1,19 +1,18 @@
-import { Info, Play, Star, Video } from 'lucide-react';
+import { Info, Star } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { getPreferredTitle } from '../../services/anilist/media';
 import type { AniListMedia } from '../../services/anilist/types';
 import { MyListButton } from '../../features/my-list/components/MyListButton';
+import { AnimeWatchActions } from '../../features/watch/components/AnimeWatchActions';
 import { Button } from '../common/Button';
-import { Modal } from '../common/Modal';
 import {
   formatMetadataValue,
   formatAnimeStatus,
   getHeroImage,
   getPrimaryStudio,
-  getTrailerEmbedUrl,
   stripAniListHtml,
 } from './featuredHeroUtils';
 
@@ -21,10 +20,7 @@ type FeaturedHeroProps = {
   anime: AniListMedia | null;
 };
 
-type HeroModal = 'membership' | 'trailer' | null;
-
 export function FeaturedHero({ anime }: FeaturedHeroProps) {
-  const [activeModal, setActiveModal] = useState<HeroModal>(null);
   const navigate = useNavigate();
 
   const heroData = useMemo(() => {
@@ -37,7 +33,6 @@ export function FeaturedHero({ anime }: FeaturedHeroProps) {
       heroImage: getHeroImage(anime),
       studio: getPrimaryStudio(anime),
       title: getPreferredTitle(anime.title),
-      trailerUrl: getTrailerEmbedUrl(anime),
     };
   }, [anime]);
 
@@ -146,26 +141,7 @@ export function FeaturedHero({ anime }: FeaturedHeroProps) {
           </div>
 
           <div className="mt-7 flex flex-wrap gap-3">
-            <Button
-              aria-label={`Watch ${heroData.title} now`}
-              onClick={() => setActiveModal('membership')}
-            >
-              <Play aria-hidden="true" size={17} />
-              Watch Now
-            </Button>
-            <Button
-              aria-label={
-                heroData.trailerUrl === null
-                  ? `Trailer unavailable for ${heroData.title}`
-                  : `Watch trailer for ${heroData.title}`
-              }
-              disabled={heroData.trailerUrl === null}
-              onClick={() => setActiveModal('trailer')}
-              variant="secondary"
-            >
-              <Video aria-hidden="true" size={17} />
-              Watch Trailer
-            </Button>
+            <AnimeWatchActions anime={anime} />
             <Button
               aria-label={`More information about ${heroData.title}`}
               onClick={() => navigate(`/anime/${anime.id}`)}
@@ -178,36 +154,6 @@ export function FeaturedHero({ anime }: FeaturedHeroProps) {
           </div>
         </motion.div>
       </div>
-
-      <Modal
-        isOpen={activeModal === 'membership'}
-        onClose={() => setActiveModal(null)}
-        title="Membership Required"
-      >
-        <p className="text-sm leading-6 text-muted">
-          Episode playback is intentionally unavailable in this portfolio
-          prototype. This modal previews the future membership gate without
-          adding authentication, payments, or video hosting.
-        </p>
-      </Modal>
-
-      <Modal
-        isOpen={activeModal === 'trailer'}
-        onClose={() => setActiveModal(null)}
-        title={`${heroData.title} Trailer`}
-      >
-        {heroData.trailerUrl !== null ? (
-          <div className="aspect-video overflow-hidden rounded-lg border border-border bg-background">
-            <iframe
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              allowFullScreen
-              className="h-full w-full"
-              src={heroData.trailerUrl}
-              title={`${heroData.title} official trailer`}
-            />
-          </div>
-        ) : null}
-      </Modal>
     </motion.section>
   );
 }
