@@ -1,10 +1,24 @@
 import { render, screen } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { App } from './App';
+import { createAniListPageFixture } from '../services/anilist/test-fixtures';
 
 describe('App', () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
   it('renders the application shell', () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn<typeof fetch>().mockResolvedValue(
+        Response.json({
+          data: createAniListPageFixture(),
+        }),
+      ),
+    );
+
     render(<App />);
 
     expect(

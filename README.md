@@ -1,9 +1,12 @@
 # Anivue
 
-Anivue is a production-minded React foundation for a modern anime discovery and
-tracking experience. This initial version intentionally focuses on application
-architecture, tooling, styling, routing, and test infrastructure. It does not
-integrate AniList or include anime-specific product features yet.
+Anivue is a production-minded React application foundation for a modern anime
+discovery and tracking experience. The current milestone adds a typed AniList
+GraphQL catalogue layer and verifies it through a temporary Home page catalogue.
+
+Anivue does not host anime episodes. Future playback experiences are expected to
+use a membership-lock concept that points users toward appropriate licensed
+access rather than storing or serving video content directly.
 
 ## Tech Stack
 
@@ -17,6 +20,7 @@ integrate AniList or include anime-specific product features yet.
 - Lucide React
 - ESLint + Prettier
 - Vitest + React Testing Library
+- AniList GraphQL API for public catalogue metadata
 
 ## Folder Structure
 
@@ -34,9 +38,34 @@ src/
     home/             Home route boundary
     my-list/          My List route boundary
     not-found/        404 route boundary
+  services/
+    anilist/          Typed GraphQL client, operations, errors, and utilities
   styles/
     globals.css       Tailwind entrypoint and CSS design tokens
 ```
+
+## API Architecture
+
+AniList catalogue metadata is accessed from the public GraphQL endpoint at
+`https://graphql.anilist.co` with the browser Fetch API and TanStack Query. Public
+anime metadata does not require user authentication, API credentials, or
+environment variables.
+
+The AniList service layer is intentionally small:
+
+- `client.ts` sends typed GraphQL POST requests and normalizes HTTP, GraphQL,
+  network, parse, and rate-limit failures.
+- `queries.ts` stores reusable catalogue operations and a shared media fragment.
+- `types.ts` defines the AniList response shapes used by the app.
+- `season.ts` calculates the current AniList season and season year.
+- `media.ts` contains small media utilities such as preferred-title fallback.
+
+AniList data and images remain owned or managed by their respective sources.
+Anivue uses AniList as a catalogue source and does not claim endorsement by
+AniList.
+
+Planned trailer support should use official trailer metadata where available,
+without treating trailers as hosted Anivue playback content.
 
 ## Development Scripts
 
