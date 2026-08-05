@@ -82,8 +82,31 @@ gracefully.
 - Homepage: cinematic featured hero and three independent catalogue carousels.
 - Details page: banner hero, poster, metadata, expandable sanitized description,
   characters, recommendations, relations, staff, and studios.
+- Search: URL-driven catalogue discovery at `/search` with debounced title
+  queries, filters, sorting, pagination, and result cards that route to details.
 - Prototype actions: `Watch Now` opens the membership-required modal, trailers
   open in an embed modal when available, and `Add to My List` is visual only.
+
+## Search
+
+Search state is stored in URL query parameters so pages can be refreshed,
+shared, and navigated with browser back/forward. Supported parameters include
+`q`, `genre`, `format`, `status`, `season`, `year`, `sort`, and `page`.
+
+Supported filters:
+
+- Genre: a curated AniList-compatible anime genre list
+- Format: `TV`, `TV_SHORT`, `MOVIE`, `SPECIAL`, `OVA`, `ONA`, `MUSIC`
+- Status: `FINISHED`, `RELEASING`, `NOT_YET_RELEASED`, `CANCELLED`, `HIATUS`
+- Season: `WINTER`, `SPRING`, `SUMMER`, `FALL`
+- Year: validated numeric range
+- Sort: relevance for title searches, plus popularity, trending, score, start
+  date, and romaji title sorting
+
+Navbar and search-page text input is debounced before updating `/search`, while
+pressing Enter submits immediately. Search uses TanStack Query and the existing
+AniList Fetch client, passes cancellation signals through requests, and uses
+standard Previous/Next pagination through the `page` URL parameter.
 
 ## Development Scripts
 

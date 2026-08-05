@@ -1,6 +1,26 @@
 export type AniListMediaType = 'ANIME';
-export type AniListMediaSort = 'TRENDING_DESC' | 'POPULARITY_DESC';
+export type AniListMediaSort =
+  | 'SEARCH_MATCH'
+  | 'TRENDING_DESC'
+  | 'POPULARITY_DESC'
+  | 'SCORE_DESC'
+  | 'START_DATE_DESC'
+  | 'TITLE_ROMAJI';
 export type AniListSeason = 'WINTER' | 'SPRING' | 'SUMMER' | 'FALL';
+export type AniListMediaFormat =
+  | 'TV'
+  | 'TV_SHORT'
+  | 'MOVIE'
+  | 'SPECIAL'
+  | 'OVA'
+  | 'ONA'
+  | 'MUSIC';
+export type AniListMediaStatus =
+  | 'FINISHED'
+  | 'RELEASING'
+  | 'NOT_YET_RELEASED'
+  | 'CANCELLED'
+  | 'HIATUS';
 
 export type GraphQLVariables = Record<string, unknown>;
 
@@ -197,4 +217,16 @@ export type CurrentSeasonAnimeVariables = AnimeCatalogueVariables & {
 
 export type AnimeDetailsVariables = {
   id: number;
+};
+
+export type AnimeSearchVariables = {
+  search?: string;
+  page: number;
+  perPage: number;
+  genre?: string;
+  format?: AniListMediaFormat;
+  status?: AniListMediaStatus;
+  season?: AniListSeason;
+  seasonYear?: number;
+  sort: AniListMediaSort;
 };

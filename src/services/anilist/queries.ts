@@ -105,6 +105,38 @@ export const CURRENT_SEASON_ANIME_QUERY = `
   }
 `;
 
+export const SEARCH_ANIME_QUERY = `
+  ${ANILIST_MEDIA_FRAGMENT}
+  query SearchAnime(
+    $search: String
+    $page: Int!
+    $perPage: Int!
+    $genre: String
+    $format: MediaFormat
+    $status: MediaStatus
+    $season: MediaSeason
+    $seasonYear: Int
+    $sort: [MediaSort]
+  ) {
+    Page(page: $page, perPage: $perPage) {
+      ${PAGE_INFO_FIELDS}
+      media(
+        type: ANIME
+        isAdult: false
+        search: $search
+        genre: $genre
+        format: $format
+        status: $status
+        season: $season
+        seasonYear: $seasonYear
+        sort: $sort
+      ) {
+        ...AnimeCatalogueMedia
+      }
+    }
+  }
+`;
+
 export const ANIME_DETAILS_QUERY = `
   ${ANILIST_MEDIA_FRAGMENT}
   query AnimeDetails($id: Int!) {

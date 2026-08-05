@@ -3,11 +3,13 @@ import {
   ANIME_DETAILS_QUERY,
   CURRENT_SEASON_ANIME_QUERY,
   POPULAR_ANIME_QUERY,
+  SEARCH_ANIME_QUERY,
   TRENDING_ANIME_QUERY,
 } from './queries';
 import type {
   AnimeDetailsVariables,
   AnimeCatalogueVariables,
+  AnimeSearchVariables,
   AniListAnimeDetailsResponse,
   AniListPageResponse,
   CurrentSeasonAnimeVariables,
@@ -56,6 +58,17 @@ export function fetchAnimeDetails(
 ): Promise<AniListAnimeDetailsResponse> {
   return requestAniListAnimeDetails({
     query: ANIME_DETAILS_QUERY,
+    variables,
+    signal: options.signal,
+  });
+}
+
+export function fetchAnimeSearch(
+  variables: AnimeSearchVariables,
+  options: RequestOptions = {},
+): Promise<AniListPageResponse> {
+  return requestAniListPage({
+    query: SEARCH_ANIME_QUERY,
     variables,
     signal: options.signal,
   });

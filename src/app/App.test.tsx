@@ -27,6 +27,8 @@ describe('App', () => {
       screen.getByRole('link', { name: /anivue home/i }),
     ).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Browse' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /search/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'Open search' }),
+    ).toBeInTheDocument();
   });
 });
