@@ -1,12 +1,17 @@
 # Anivue
 
 Anivue is a production-minded React application foundation for a modern anime
-discovery and tracking experience. The current milestone adds a typed AniList
-GraphQL catalogue layer and verifies it through a temporary Home page catalogue.
+discovery and tracking experience. The current homepage includes a cinematic
+featured hero sourced from AniList trending metadata, plus reusable catalogue
+sections for trending, popular, and current-season anime.
 
 Anivue does not host anime episodes. Future playback experiences are expected to
 use a membership-lock concept that points users toward appropriate licensed
 access rather than storing or serving video content directly.
+
+The current `Watch Now` action intentionally opens a prototype
+`Membership Required` modal. It demonstrates product direction without adding
+authentication, pricing, payments, or playback.
 
 ## Tech Stack
 
@@ -66,6 +71,10 @@ AniList.
 
 Planned trailer support should use official trailer metadata where available,
 without treating trailers as hosted Anivue playback content.
+
+The featured hero can open official YouTube trailer embeds when AniList provides
+trailer metadata. If no trailer exists, the trailer action is disabled
+gracefully.
 
 ## Development Scripts
 

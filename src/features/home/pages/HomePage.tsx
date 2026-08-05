@@ -1,12 +1,15 @@
 import { motion } from 'framer-motion';
 import type { UseQueryResult } from '@tanstack/react-query';
+import { useMemo } from 'react';
 
 import { AnimeCard } from '../../../components/anime/AnimeCard';
+import { FeaturedHero } from '../../../components/anime/FeaturedHero';
 import { SkeletonAnimeCard } from '../../../components/anime/SkeletonAnimeCard';
 import { EmptyState } from '../../../components/common/EmptyState';
 import { ErrorState } from '../../../components/common/ErrorState';
 import { HorizontalCarousel } from '../../../components/common/HorizontalCarousel';
 import { SectionHeader } from '../../../components/common/SectionHeader';
+import { getFeaturedAnime } from '../../../components/anime/featuredHeroUtils';
 import type { AniListPageResponse } from '../../../services/anilist/types';
 import {
   useCurrentSeasonAnime,
@@ -35,7 +38,7 @@ function AnimeCatalogueSection({
   const titleId = `${title.replace(/\s+/g, '-').toLowerCase()}-title`;
 
   return (
-    <section aria-labelledby={titleId}>
+    <section aria-labelledby={titleId} className="scroll-mt-24">
       <SectionHeader id={titleId} subtitle={description} title={title} />
 
       {query.isPending ? (
@@ -82,33 +85,22 @@ export function HomePage() {
   const currentSeasonAnimeQuery = useCurrentSeasonAnime({
     perPage: HOME_SECTION_PAGE_SIZE,
   });
+  const featuredAnime = useMemo(
+    () => getFeaturedAnime(trendingAnimeQuery.data?.Page.media ?? []),
+    [trendingAnimeQuery.data?.Page.media],
+  );
 
   return (
-    <div className="w-full space-y-12">
-      <motion.section
-        animate={{ opacity: 1, y: 0 }}
-        aria-labelledby="home-heading"
-        className="rounded-lg border border-border bg-surface/70 px-5 py-8 shadow-glow sm:px-8"
-        initial={{ opacity: 0, y: 12 }}
-        transition={{ duration: 0.22, ease: 'easeOut' }}
-      >
-        <p className="mb-3 text-sm font-medium uppercase text-accent">
-          Home foundation
-        </p>
-        <h1
-          className="text-3xl font-semibold tracking-normal text-foreground sm:text-4xl"
-          id="home-heading"
-        >
-          Featured Anime Coming Soon
-        </h1>
-        <p className="mt-4 max-w-2xl text-base leading-7 text-muted">
-          This placeholder reserves the future featured area while the reusable
-          streaming interface components are built out.
-        </p>
-      </motion.section>
+    <motion.div
+      animate={{ opacity: 1, y: 0 }}
+      className="w-full space-y-14 sm:space-y-16"
+      initial={{ opacity: 0, y: 8 }}
+      transition={{ duration: 0.22, ease: 'easeOut' }}
+    >
+      <FeaturedHero anime={featuredAnime} />
 
       <AnimeCatalogueSection
-        description="A reusable carousel powered by the trending AniList catalogue."
+        description="High-momentum titles rising across the AniList catalogue."
         emptyDescription="AniList returned no trending anime for this request."
         emptyTitle="No trending anime found."
         query={trendingAnimeQuery}
@@ -116,7 +108,7 @@ export function HomePage() {
       />
 
       <AnimeCatalogueSection
-        description="Popular titles from the public AniList anime catalogue."
+        description="Audience favourites with strong catalogue demand."
         emptyDescription="AniList returned no popular anime for this request."
         emptyTitle="No popular anime found."
         query={popularAnimeQuery}
@@ -124,12 +116,12 @@ export function HomePage() {
       />
 
       <AnimeCatalogueSection
-        description="Current-season anime calculated from the current date."
+        description="This season's standout anime, calculated from the current date."
         emptyDescription="AniList returned no current-season anime for this request."
         emptyTitle="No current-season anime found."
         query={currentSeasonAnimeQuery}
         title="Current Season"
       />
-    </div>
+    </motion.div>
   );
 }

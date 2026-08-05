@@ -12,10 +12,12 @@ describe('App', () => {
   it('renders the application shell', () => {
     vi.stubGlobal(
       'fetch',
-      vi.fn<typeof fetch>().mockResolvedValue(
-        Response.json({
-          data: createAniListPageFixture(),
-        }),
+      vi.fn<typeof fetch>().mockImplementation(() =>
+        Promise.resolve(
+          Response.json({
+            data: createAniListPageFixture(),
+          }),
+        ),
       ),
     );
 
