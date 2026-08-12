@@ -5,8 +5,8 @@ import { Button } from '../../../components/common/Button';
 import { Modal } from '../../../components/common/Modal';
 import {
   MEMBERSHIP_FEATURE_PREVIEW,
-  ANIVUE_PROTOTYPE_DISCLOSURE,
 } from '../content/prototypeDisclosure';
+import { PrototypeDisclosure } from './PrototypeDisclosure';
 import type { MembershipModalArtwork } from '../types';
 
 type MembershipRequiredModalProps = {
@@ -88,9 +88,7 @@ export function MembershipRequiredModal({
             </div>
           ) : null}
 
-          <p className="text-xs leading-5 text-muted">
-            {ANIVUE_PROTOTYPE_DISCLOSURE}
-          </p>
+          <PrototypeDisclosure />
 
           <div className="flex flex-wrap gap-3">
             <Button

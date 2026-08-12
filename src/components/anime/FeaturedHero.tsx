@@ -52,11 +52,10 @@ export function FeaturedHero({ anime }: FeaturedHeroProps) {
               className="text-4xl font-semibold text-foreground sm:text-5xl"
               id="featured-hero-title"
             >
-              Featured Anime Coming Soon
+              Featured Anime Loading
             </h1>
             <p className="mt-4 text-base leading-7 text-muted">
-              The featured area will populate as soon as trending catalogue data
-              is available.
+              Trending catalogue data is preparing the featured experience.
             </p>
           </div>
         </div>

@@ -3,7 +3,6 @@ import { describe, expect, it } from 'vitest';
 import {
   getSupportedTrailer,
   getTrailerEmbedUrl,
-  getTrailerThumbnail,
   isTrailerSupported,
 } from './trailerUtils';
 
@@ -49,22 +48,5 @@ describe('trailerUtils', () => {
         thumbnail: null,
       }),
     ).toBe(false);
-  });
-
-  it('returns a thumbnail only for supported trailers', () => {
-    expect(
-      getTrailerThumbnail({
-        id: 'abc123_DEF4',
-        site: 'youtube',
-        thumbnail: 'https://example.com/thumb.jpg',
-      }),
-    ).toBe('https://example.com/thumb.jpg');
-    expect(
-      getTrailerThumbnail({
-        id: 'invalid',
-        site: 'youtube',
-        thumbnail: 'https://example.com/thumb.jpg',
-      }),
-    ).toBeNull();
   });
 });

@@ -31,7 +31,3 @@ export function getTrailerEmbedUrl(trailer: SupportedTrailer): string {
 
   return `https://www.youtube-nocookie.com/embed/${trailer.id}?${params.toString()}`;
 }
-
-export function getTrailerThumbnail(trailer: TrailerSource): string | null {
-  return getSupportedTrailer(trailer)?.thumbnail ?? null;
-}

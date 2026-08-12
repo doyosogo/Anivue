@@ -1,19 +1,37 @@
 # Anivue
 
-Anivue is a production-minded React application foundation for a modern anime
-discovery and tracking experience. The current homepage includes a cinematic
-featured hero sourced from AniList trending metadata, plus reusable catalogue
-sections for trending, recently viewed, personalised recommendations, popular,
-and current-season anime. Anime cards and the featured hero link to a dedicated
-details page at `/anime/:id`.
+Anivue is a production-quality anime discovery portfolio prototype. It presents
+public AniList catalogue metadata through a polished streaming-platform
+interface built with React, TypeScript, TanStack Query, Zustand, Framer Motion,
+and Tailwind CSS.
 
-Anivue does not host anime episodes. Future playback experiences are expected to
-use a membership-lock concept that points users toward appropriate licensed
-access rather than storing or serving video content directly.
+The app includes a cinematic homepage, search and discovery filters, dedicated
+anime details pages, browser-only My List, Recently Viewed, lightweight
+personalised recommendations, membership-lock messaging, and safe official
+YouTube trailer embeds.
 
-The current `Watch Now` action intentionally opens a reusable membership-lock
-modal. It demonstrates product direction without adding authentication,
-registration, pricing, payments, real subscription activation, or playback.
+Anivue does not host anime episodes. `Watch Now` intentionally opens a reusable
+membership-lock modal that explains playback, accounts, payments, and
+registration are not implemented in this non-commercial portfolio prototype.
+
+## Project Status
+
+Anivue is ready for portfolio presentation and static deployment. The core user
+flows are implemented and tested:
+
+- Browse/search public anime metadata.
+- Open details pages directly at `/anime/:id`.
+- Save titles to My List in the current browser.
+- Review browser-only Viewing History at `/history`.
+- See AniList-powered personalised recommendations after opening details pages.
+- Open supported official YouTube trailers without hosting or proxying media.
+
+Known intentional limits:
+
+- No episode playback, accounts, payments, backend, or hosted anime video.
+- My List and Recently Viewed are local to the current browser.
+- AniList data, images, and trailer metadata remain owned or managed by their
+  respective sources.
 
 ## Tech Stack
 
@@ -84,7 +102,8 @@ or arbitrary URLs.
 
 ## Current Progress
 
-- Homepage: cinematic featured hero and three independent catalogue carousels.
+- Homepage: cinematic featured hero, catalogue carousels, Recently Viewed, and
+  Because You Viewed recommendations.
 - Details page: banner hero, poster, metadata, expandable sanitized description,
   characters, recommendations, relations, staff, and studios.
 - Search: URL-driven catalogue discovery at `/search` with debounced title
@@ -187,6 +206,32 @@ npm run test
 npm run format
 ```
 
+## Deployment
+
+Anivue is a Vite single-page application. Build output is emitted to `dist/`.
+
+Vercel:
+
+```bash
+npm run build
+```
+
+Use the default Vite/static settings. `vercel.json` rewrites all routes to `/`
+so direct navigation and refreshes work for `/search`, `/my-list`, `/history`,
+and `/anime/:id`.
+
+Netlify:
+
+```bash
+npm run build
+```
+
+Publish `dist/`. The `public/_redirects` file is copied into the build and
+rewrites all routes to `/index.html` for SPA refresh safety.
+
+Other static hosts need the same fallback rule: serve `index.html` for unknown
+paths while leaving built assets untouched.
+
 ## Design System
 
 Anivue uses dark CSS variables as design tokens, with deep navy application
@@ -210,7 +255,3 @@ TanStack Query remains the only remote-data cache. Persisted Zustand stores keep
 browser-only My List and Recently Viewed data isolated, with test-safe resets and
 hydration-aware rendering where persisted history affects homepage
 personalisation.
-
-
-
-Testing Jenkins webhook

@@ -127,7 +127,7 @@ export function MyListPage() {
       >
         <p className="text-sm leading-6 text-muted">
           This removes every saved title from this browser. It does not affect
-          AniList or any account because Anivue is not using accounts yet.
+          AniList and does not require an Anivue account.
         </p>
         <div className="mt-6 flex flex-wrap justify-end gap-3">
           <Button onClick={() => setIsClearModalOpen(false)} variant="secondary">
