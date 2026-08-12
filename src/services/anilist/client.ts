@@ -10,6 +10,7 @@ import type {
   AniListCoverImage,
   AniListAnimeDetails,
   AniListAnimeDetailsResponse,
+  AniListAnimeRecommendationsResponse,
   AniListCharacter,
   AniListCharacterConnection,
   AniListCharacterEdge,
@@ -557,6 +558,29 @@ export function parseAnimeDetailsResponse(
   };
 }
 
+export function parseAnimeRecommendationsResponse(
+  value: unknown,
+): AniListAnimeRecommendationsResponse {
+  if (!isRecord(value) || !(value.Media === null || isRecord(value.Media))) {
+    throw new AniListParseError();
+  }
+
+  if (value.Media === null) {
+    return { Media: null };
+  }
+
+  if (!isNumber(value.Media.id)) {
+    throw new AniListParseError();
+  }
+
+  return {
+    Media: {
+      id: value.Media.id,
+      recommendations: parseRecommendationConnection(value.Media.recommendations),
+    },
+  };
+}
+
 async function parseJsonResponse(response: Response): Promise<unknown> {
   try {
     return await response.json();
@@ -628,5 +652,16 @@ export function requestAniListAnimeDetails<TVariables extends GraphQLVariables>(
   return requestAniListData({
     ...options,
     parseData: parseAnimeDetailsResponse,
+  });
+}
+
+export function requestAniListAnimeRecommendations<
+  TVariables extends GraphQLVariables,
+>(
+  options: AniListRequestOptions<TVariables>,
+): Promise<AniListAnimeRecommendationsResponse> {
+  return requestAniListData({
+    ...options,
+    parseData: parseAnimeRecommendationsResponse,
   });
 }

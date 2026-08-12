@@ -1,6 +1,11 @@
-import { requestAniListAnimeDetails, requestAniListPage } from './client';
+import {
+  requestAniListAnimeDetails,
+  requestAniListAnimeRecommendations,
+  requestAniListPage,
+} from './client';
 import {
   ANIME_DETAILS_QUERY,
+  ANIME_RECOMMENDATIONS_QUERY,
   CURRENT_SEASON_ANIME_QUERY,
   POPULAR_ANIME_QUERY,
   SEARCH_ANIME_QUERY,
@@ -8,9 +13,11 @@ import {
 } from './queries';
 import type {
   AnimeDetailsVariables,
+  AnimeRecommendationsVariables,
   AnimeCatalogueVariables,
   AnimeSearchVariables,
   AniListAnimeDetailsResponse,
+  AniListAnimeRecommendationsResponse,
   AniListPageResponse,
   CurrentSeasonAnimeVariables,
 } from './types';
@@ -69,6 +76,17 @@ export function fetchAnimeSearch(
 ): Promise<AniListPageResponse> {
   return requestAniListPage({
     query: SEARCH_ANIME_QUERY,
+    variables,
+    signal: options.signal,
+  });
+}
+
+export function fetchAnimeRecommendations(
+  variables: AnimeRecommendationsVariables,
+  options: RequestOptions = {},
+): Promise<AniListAnimeRecommendationsResponse> {
+  return requestAniListAnimeRecommendations({
+    query: ANIME_RECOMMENDATIONS_QUERY,
     variables,
     signal: options.signal,
   });

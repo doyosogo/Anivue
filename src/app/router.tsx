@@ -5,6 +5,7 @@ import { AnimeDetailsPage } from '../features/anime/pages/AnimeDetailsPage';
 import { HomePage } from '../features/home/pages/HomePage';
 import { MyListPage } from '../features/my-list/pages/MyListPage';
 import { NotFoundPage } from '../features/not-found/pages/NotFoundPage';
+import { ViewingHistoryPage } from '../features/recently-viewed/pages/ViewingHistoryPage';
 import { SearchPage } from '../features/search/pages/SearchPage';
 
 export const router = createBrowserRouter([
@@ -26,6 +27,10 @@ export const router = createBrowserRouter([
       {
         path: '/my-list',
         element: <MyListPage />,
+      },
+      {
+        path: '/history',
+        element: <ViewingHistoryPage />,
       },
       {
         path: '/anime/:id',

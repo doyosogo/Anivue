@@ -6,6 +6,10 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { createAniListDetailsFixture } from '../../../services/anilist/test-fixtures';
 import { resetMyListStoreForTest, useMyListStore } from '../../my-list/store/useMyListStore';
+import {
+  resetRecentlyViewedStoreForTest,
+  useRecentlyViewedStore,
+} from '../../recently-viewed/store/useRecentlyViewedStore';
 import { AnimeDetailsPage } from './AnimeDetailsPage';
 
 function renderAnimeDetailsPage(initialPath = '/anime/1') {
@@ -46,6 +50,7 @@ describe('AnimeDetailsPage', () => {
     vi.unstubAllGlobals();
     act(() => {
       resetMyListStoreForTest();
+      resetRecentlyViewedStoreForTest();
     });
     window.localStorage.clear();
   });
@@ -214,5 +219,37 @@ describe('AnimeDetailsPage', () => {
         'Fullmetal Alchemist: Brotherhood official promotional trailer',
       ),
     ).toBeInTheDocument();
+  });
+
+  it('records a successfully loaded details page as recently viewed', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn<typeof fetch>().mockResolvedValue(mockDetailsResponse()),
+    );
+
+    renderAnimeDetailsPage();
+
+    await screen.findByRole('heading', {
+      name: 'Fullmetal Alchemist: Brotherhood',
+    });
+
+    await waitFor(() =>
+      expect(useRecentlyViewedStore.getState().getRecentlyViewed()[0]?.id).toBe(1),
+    );
+  });
+
+  it('does not record failed details requests as recently viewed', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn<typeof fetch>().mockRejectedValue(new Error('Network failed')),
+    );
+
+    renderAnimeDetailsPage();
+
+    await screen.findByRole('heading', {
+      name: 'Anime details could not load.',
+    });
+
+    expect(useRecentlyViewedStore.getState().getRecentlyViewed()).toEqual([]);
   });
 });

@@ -19,6 +19,8 @@ export const anilistQueryKeys = {
       { page, perPage, season, seasonYear },
     ] as const,
   details: (id: number) => [...anilistQueryKeys.all, 'details', id] as const,
+  recommendations: (id: number, perPage: number) =>
+    [...anilistQueryKeys.all, 'recommendations', { id, perPage }] as const,
   search: (variables: AnimeSearchVariables) =>
     [...anilistQueryKeys.all, 'search', variables] as const,
 };

@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 import { AnimeCard } from '../../../components/anime/AnimeCard';
@@ -16,6 +16,7 @@ import { ErrorState } from '../../../components/common/ErrorState';
 import { HorizontalCarousel } from '../../../components/common/HorizontalCarousel';
 import { SectionHeader } from '../../../components/common/SectionHeader';
 import { MyListButton } from '../../my-list/components/MyListButton';
+import { useRecentlyViewedStore } from '../../recently-viewed/store/useRecentlyViewedStore';
 import { AnimeWatchActions } from '../../watch/components/AnimeWatchActions';
 import { getPreferredTitle } from '../../../services/anilist/media';
 import type {
@@ -304,6 +305,15 @@ export function AnimeDetailsPage() {
   const animeId = params.id === undefined ? null : Number(params.id);
   const hasValidId = animeId !== null && Number.isInteger(animeId) && animeId > 0;
   const animeDetailsQuery = useAnimeDetails(hasValidId ? animeId : null);
+  const recordViewedAnime = useRecentlyViewedStore(
+    (state) => state.recordViewedAnime,
+  );
+
+  useEffect(() => {
+    if (animeDetailsQuery.isSuccess && animeDetailsQuery.data.Media !== null) {
+      recordViewedAnime(animeDetailsQuery.data.Media);
+    }
+  }, [animeDetailsQuery.data, animeDetailsQuery.isSuccess, recordViewedAnime]);
 
   if (!hasValidId) {
     return (

@@ -3,8 +3,9 @@
 Anivue is a production-minded React application foundation for a modern anime
 discovery and tracking experience. The current homepage includes a cinematic
 featured hero sourced from AniList trending metadata, plus reusable catalogue
-sections for trending, popular, and current-season anime. Anime cards and the
-featured hero link to a dedicated details page at `/anime/:id`.
+sections for trending, recently viewed, personalised recommendations, popular,
+and current-season anime. Anime cards and the featured hero link to a dedicated
+details page at `/anime/:id`.
 
 Anivue does not host anime episodes. Future playback experiences are expected to
 use a membership-lock concept that points users toward appropriate licensed
@@ -45,6 +46,7 @@ src/
     membership/       Reusable membership-lock modal and prototype disclosure
     my-list/          My List route boundary
     not-found/        404 route boundary
+    recently-viewed/  Browser-only viewing history and recommendations
     trailer/          Official trailer modal, provider validation, and embed utils
     watch/            Shared Watch Now and Watch Trailer controls
   services/
@@ -68,6 +70,7 @@ The AniList service layer is intentionally small:
 - `types.ts` defines the AniList response shapes used by the app.
 - `season.ts` calculates the current AniList season and season year.
 - `media.ts` contains small media utilities such as preferred-title fallback.
+- `snapshot.ts` maps AniList media into compact browser-persisted snapshots.
 
 AniList data and images remain owned or managed by their respective sources.
 Anivue uses AniList as a catalogue source and does not claim endorsement by
@@ -88,6 +91,10 @@ or arbitrary URLs.
   queries, filters, sorting, pagination, and result cards that route to details.
 - My List: browser-only saved titles with local persistence, card controls,
   details/hero integration, sorting, and clear confirmation.
+- Recently Viewed: browser-only history of opened details pages, surfaced on the
+  homepage and managed at `/history`.
+- Because You Viewed: a lightweight homepage row powered by AniList
+  recommendations for the most recently viewed title.
 - Prototype actions: `Watch Now` opens the shared membership-required modal,
   trailers open in the shared official-trailer modal when supported, and `Add to
   My List` persists locally.
@@ -143,6 +150,32 @@ request per saved title.
 
 Persistence includes a version and a safe migration fallback so malformed or
 older local data does not crash the app.
+
+## Recently Viewed
+
+Recently Viewed is separate from My List. It records a title only after a valid
+anime details page loads at `/anime/:id`; rendering or hovering an AnimeCard does
+not add anything to history. This is not episode progress, not Continue
+Watching, and not playback tracking.
+
+Viewing history is stored only in the current browser with Zustand persist under
+the `anivue-recently-viewed` localStorage key. No history is sent to an Anivue
+account or backend. Clearing browser storage removes it.
+
+The persisted history stores compact AniList catalogue snapshots plus `viewedAt`
+timestamps, capped at 30 titles. Recording the same title later updates
+`viewedAt` and moves it to the front; rapid duplicate records are ignored to keep
+development Strict Mode stable.
+
+The homepage shows a Recently Viewed row only when browser history exists, using
+stored snapshots without refetching each title. `/history` provides a dedicated
+Viewing History page with count, sorting, individual removal, and clear-all
+confirmation.
+
+The personalised `Because You Viewed [Anime Title]` row uses the most recently
+viewed AniList ID to request a focused recommendation set from AniList. Results
+exclude adult entries, the seed title, duplicates, and invalid recommendation
+items.
 
 ## Development Scripts
 

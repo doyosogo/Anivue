@@ -188,6 +188,13 @@ export type AniListAnimeDetailsResponse = {
   Media: AniListAnimeDetails | null;
 };
 
+export type AniListAnimeRecommendationsResponse = {
+  Media: {
+    id: number;
+    recommendations: AniListRecommendationConnection;
+  } | null;
+};
+
 export type AniListPageInfo = {
   total: number | null;
   currentPage: number;
@@ -217,6 +224,11 @@ export type CurrentSeasonAnimeVariables = AnimeCatalogueVariables & {
 
 export type AnimeDetailsVariables = {
   id: number;
+};
+
+export type AnimeRecommendationsVariables = {
+  id: number;
+  perPage: number;
 };
 
 export type AnimeSearchVariables = {

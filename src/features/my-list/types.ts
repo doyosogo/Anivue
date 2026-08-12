@@ -1,25 +1,6 @@
-import type {
-  AniListCoverImage,
-  AniListMediaFormat,
-  AniListMediaStatus,
-  AniListMediaTitle,
-  AniListSeason,
-  AniListTrailer,
-} from '../../services/anilist/types';
+import type { AniListMediaSnapshot } from '../../services/anilist/snapshot';
 
-export type MyListItem = {
-  id: number;
-  title: AniListMediaTitle;
-  coverImage: AniListCoverImage;
-  bannerImage: string | null;
-  averageScore: number | null;
-  episodes: number | null;
-  status: AniListMediaStatus | string | null;
-  format: AniListMediaFormat | string | null;
-  season: AniListSeason | null;
-  seasonYear: number | null;
-  genres: string[];
-  trailer: AniListTrailer | null;
+export type MyListItem = AniListMediaSnapshot & {
   dateAdded: string;
 };
 

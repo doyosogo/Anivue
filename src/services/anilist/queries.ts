@@ -200,3 +200,21 @@ export const ANIME_DETAILS_QUERY = `
     }
   }
 `;
+
+export const ANIME_RECOMMENDATIONS_QUERY = `
+  ${ANILIST_MEDIA_FRAGMENT}
+  query AnimeRecommendations($id: Int!, $perPage: Int!) {
+    Media(id: $id, type: ANIME, isAdult: false) {
+      id
+      recommendations(sort: RATING_DESC, perPage: $perPage) {
+        nodes {
+          id
+          rating
+          mediaRecommendation {
+            ...AnimeCatalogueMedia
+          }
+        }
+      }
+    }
+  }
+`;
