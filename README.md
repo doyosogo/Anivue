@@ -33,6 +33,8 @@ Known intentional limits:
 - AniList data, images, and trailer metadata remain owned or managed by their
   respective sources.
 
+For a concise presentation walkthrough, see [DEMO.md](./DEMO.md).
+
 ## Tech Stack
 
 - React + TypeScript
@@ -231,6 +233,18 @@ rewrites all routes to `/index.html` for SPA refresh safety.
 
 Other static hosts need the same fallback rule: serve `index.html` for unknown
 paths while leaving built assets untouched.
+
+## Final QA Checklist
+
+- Production build, lint, and test suite pass locally.
+- Automated tests mock AniList requests; the test suite does not make live
+  AniList calls.
+- Direct SPA routes are covered by Vercel and Netlify fallback config.
+- Demo-critical routes: `/`, `/search`, `/my-list`, `/history`, `/anime/:id`,
+  and unknown routes.
+- Browser-only persistence is limited to My List and Recently Viewed.
+- Visible copy avoids implying real streaming, accounts, payments, or hosted
+  anime episodes.
 
 ## Design System
 
