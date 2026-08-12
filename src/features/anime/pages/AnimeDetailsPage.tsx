@@ -310,10 +310,14 @@ export function AnimeDetailsPage() {
   );
 
   useEffect(() => {
-    if (animeDetailsQuery.isSuccess && animeDetailsQuery.data.Media !== null) {
+    if (
+      animeDetailsQuery.isSuccess &&
+      animeDetailsQuery.data.Media !== null &&
+      animeDetailsQuery.data.Media.id === animeId
+    ) {
       recordViewedAnime(animeDetailsQuery.data.Media);
     }
-  }, [animeDetailsQuery.data, animeDetailsQuery.isSuccess, recordViewedAnime]);
+  }, [animeDetailsQuery.data, animeDetailsQuery.isSuccess, animeId, recordViewedAnime]);
 
   if (!hasValidId) {
     return (

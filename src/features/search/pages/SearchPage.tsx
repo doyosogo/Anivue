@@ -239,6 +239,7 @@ export function SearchPage() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const resultsRef = useRef<HTMLDivElement>(null);
+  const scrollTimerRef = useRef<number | null>(null);
   const searchState = parseSearchUrlState(searchParams);
   const [inputValue, setInputValue] = useState(searchState.q);
   const debouncedInputValue = useDebouncedValue(inputValue, SEARCH_DEBOUNCE_MS);
@@ -263,6 +264,14 @@ export function SearchPage() {
     });
   }, [debouncedInputValue, navigate, searchState]);
 
+  useEffect(() => {
+    return () => {
+      if (scrollTimerRef.current !== null) {
+        window.clearTimeout(scrollTimerRef.current);
+      }
+    };
+  }, []);
+
   function navigateToState(nextState: SearchUrlState) {
     navigate(createSearchPath(nextState));
   }
@@ -273,10 +282,18 @@ export function SearchPage() {
 
   function updatePage(page: number) {
     navigateToState(updateSearchState(searchState, { page }));
-    window.setTimeout(() => {
+    if (scrollTimerRef.current !== null) {
+      window.clearTimeout(scrollTimerRef.current);
+    }
+
+    scrollTimerRef.current = window.setTimeout(() => {
       if (typeof resultsRef.current?.scrollIntoView === 'function') {
         resultsRef.current.scrollIntoView({
-          behavior: 'smooth',
+          behavior:
+            typeof window.matchMedia === 'function' &&
+            window.matchMedia('(prefers-reduced-motion: reduce)').matches
+              ? 'auto'
+              : 'smooth',
           block: 'start',
         });
       }

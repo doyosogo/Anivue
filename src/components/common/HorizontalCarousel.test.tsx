@@ -12,12 +12,12 @@ describe('HorizontalCarousel', () => {
       </HorizontalCarousel>,
     );
 
-    expect(
-      screen.getByRole('region', { name: 'Trending anime' }),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole('button', { name: /scroll trending anime left/i }),
-    ).toBeInTheDocument();
+    const region = screen.getByRole('region', { name: 'Trending anime' });
+    const leftButton = screen.getByRole('button', {
+      name: /scroll trending anime left/i,
+    });
+    expect(region).toBeInTheDocument();
+    expect(leftButton).toHaveAttribute('aria-controls', region.id);
     expect(
       screen.getByRole('button', { name: /scroll trending anime right/i }),
     ).toBeInTheDocument();

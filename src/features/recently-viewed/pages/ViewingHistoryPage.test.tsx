@@ -87,6 +87,7 @@ describe('ViewingHistoryPage', () => {
   it('renders the empty state', () => {
     renderViewingHistoryPage();
 
+    expect(screen.getByRole('heading', { name: 'Viewing History' })).toBeInTheDocument();
     expect(screen.getByText('No recently viewed titles.')).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Browse anime' })).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Search anime' })).toBeInTheDocument();

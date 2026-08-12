@@ -6,7 +6,6 @@ import { AnimeCard } from '../../../components/anime/AnimeCard';
 import { Button } from '../../../components/common/Button';
 import { EmptyState } from '../../../components/common/EmptyState';
 import { Modal } from '../../../components/common/Modal';
-import { SectionHeader } from '../../../components/common/SectionHeader';
 import { getPreferredTitle } from '../../../services/anilist/media';
 import { RemoveFromHistoryButton } from '../components/RemoveFromHistoryButton';
 import { useRecentlyViewedStore } from '../store/useRecentlyViewedStore';
@@ -40,6 +39,24 @@ function sortHistoryItems(
   );
 }
 
+function ViewingHistoryHeader({ count }: { count: number }) {
+  return (
+    <div>
+      <p className="mb-3 text-sm font-medium uppercase text-accent">
+        Personal Activity
+      </p>
+      <h1 className="text-4xl font-semibold text-foreground" id="viewing-history-title">
+        Viewing History
+      </h1>
+      <p className="mt-3 max-w-3xl text-sm leading-6 text-muted">
+        {count === 1 ? '1 recently viewed title' : `${count} recently viewed titles`}.
+        Stored only in this browser. Opening an anime details page adds it here;
+        this is not episode progress.
+      </p>
+    </div>
+  );
+}
+
 export function ViewingHistoryPage() {
   const itemRecord = useRecentlyViewedStore((state) => state.items);
   const hasHydrated = useRecentlyViewedStore((state) => state.hasHydrated);
@@ -61,35 +78,41 @@ export function ViewingHistoryPage() {
 
   if (!hasHydrated) {
     return (
-      <div
-        aria-label="Loading viewing history"
-        className="min-h-72 rounded-lg border border-border bg-surface"
-      />
+      <section aria-labelledby="viewing-history-title" className="w-full space-y-8">
+        <ViewingHistoryHeader count={0} />
+        <div
+          aria-label="Loading viewing history"
+          className="min-h-72 animate-pulse rounded-lg border border-border bg-surface"
+        />
+      </section>
     );
   }
 
   if (items.length === 0) {
     return (
-      <EmptyState
-        action={
-          <div className="flex flex-wrap justify-center gap-3">
-            <Link
-              className="rounded-md bg-gradient-to-r from-primary to-accent px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-primary/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-              to="/search"
-            >
-              Browse anime
-            </Link>
-            <Link
-              className="rounded-md border border-white/15 bg-background/45 px-4 py-2.5 text-sm font-semibold text-foreground backdrop-blur-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-              to="/search?q="
-            >
-              Search anime
-            </Link>
-          </div>
-        }
-        description="Opening an anime details page adds it here. This is not episode watch progress."
-        title="No recently viewed titles."
-      />
+      <section aria-labelledby="viewing-history-title" className="w-full space-y-8">
+        <ViewingHistoryHeader count={0} />
+        <EmptyState
+          action={
+            <div className="flex flex-wrap justify-center gap-3">
+              <Link
+                className="rounded-md bg-gradient-to-r from-primary to-accent px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-primary/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                to="/search"
+              >
+                Browse anime
+              </Link>
+              <Link
+                className="rounded-md border border-white/15 bg-background/45 px-4 py-2.5 text-sm font-semibold text-foreground backdrop-blur-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                to="/search?q="
+              >
+                Search anime
+              </Link>
+            </div>
+          }
+          description="Opening an anime details page adds it here. This is not episode watch progress."
+          title="No recently viewed titles."
+        />
+      </section>
     );
   }
 
@@ -101,15 +124,11 @@ export function ViewingHistoryPage() {
       transition={{ duration: 0.22, ease: 'easeOut' }}
     >
       <section aria-labelledby="viewing-history-title" className="space-y-5">
-        <SectionHeader
-          id="viewing-history-title"
-          subtitle="Stored only in this browser. Opening an anime details page adds it here; this is not episode progress."
-          title="Viewing History"
-        />
+        <ViewingHistoryHeader count={items.length} />
 
         <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-border bg-surface p-4">
-          <p aria-live="polite" className="text-sm text-muted">
-            {items.length === 1 ? '1 recently viewed title' : `${items.length} recently viewed titles`}
+          <p className="text-sm text-muted">
+            Manage local viewing history
           </p>
           <div className="flex flex-wrap items-center gap-3">
             <label className="text-sm font-medium text-foreground" htmlFor="history-sort">

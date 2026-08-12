@@ -1,6 +1,6 @@
 import { act, cleanup, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { MemoryRouter, Route, Routes, useLocation } from 'react-router-dom';
 
 import { createAniListMediaFixture } from '../../services/anilist/test-fixtures';
@@ -26,6 +26,7 @@ function renderNavbar() {
 describe('Navbar search', () => {
   afterEach(() => {
     cleanup();
+    vi.unstubAllGlobals();
     act(() => {
       resetMyListStoreForTest();
     });
@@ -67,5 +68,31 @@ describe('Navbar search', () => {
     renderNavbar();
 
     expect(screen.getByRole('link', { name: /my list, 1 saved/i })).toBeInTheDocument();
+  });
+
+  it('closes desktop search with Escape and restores trigger focus', async () => {
+    vi.stubGlobal(
+      'matchMedia',
+      vi.fn().mockImplementation((query: string) => ({
+        addEventListener: vi.fn(),
+        addListener: vi.fn(),
+        dispatchEvent: vi.fn(),
+        matches: query === '(min-width: 768px)',
+        media: query,
+        onchange: null,
+        removeEventListener: vi.fn(),
+        removeListener: vi.fn(),
+      })),
+    );
+    const user = userEvent.setup();
+
+    renderNavbar();
+
+    await user.click(screen.getByRole('button', { name: 'Open search' }));
+    await user.keyboard('{Escape}');
+
+    await waitFor(() =>
+      expect(screen.getByRole('button', { name: 'Open search' })).toHaveFocus(),
+    );
   });
 });

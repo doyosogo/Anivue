@@ -20,6 +20,7 @@ export const HorizontalCarousel = memo(function HorizontalCarousel({
   showControls = true,
 }: HorizontalCarouselProps) {
   const carouselId = useId();
+  const scrollRegionId = `${carouselId}-scroll-region`;
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const scrollByPage = useCallback((direction: 'left' | 'right') => {
@@ -29,8 +30,12 @@ export const HorizontalCarousel = memo(function HorizontalCarousel({
     }
 
     const distance = element.clientWidth * 0.82;
+    const prefersReducedMotion =
+      typeof window.matchMedia === 'function' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
     element.scrollBy({
-      behavior: 'smooth',
+      behavior: prefersReducedMotion ? 'auto' : 'smooth',
       left: direction === 'left' ? -distance : distance,
     });
   }, []);
@@ -55,7 +60,7 @@ export const HorizontalCarousel = memo(function HorizontalCarousel({
       {showControls ? (
         <div className="absolute -top-14 right-0 hidden gap-2 sm:flex">
           <button
-            aria-controls={carouselId}
+            aria-controls={scrollRegionId}
             aria-label={`Scroll ${ariaLabel} left`}
             className="inline-flex h-10 w-10 items-center justify-center rounded-md border border-border bg-surface text-muted transition-colors hover:border-primary/60 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
             onClick={() => scrollByPage('left')}
@@ -64,7 +69,7 @@ export const HorizontalCarousel = memo(function HorizontalCarousel({
             <ChevronLeft aria-hidden="true" size={18} />
           </button>
           <button
-            aria-controls={carouselId}
+            aria-controls={scrollRegionId}
             aria-label={`Scroll ${ariaLabel} right`}
             className="inline-flex h-10 w-10 items-center justify-center rounded-md border border-border bg-surface text-muted transition-colors hover:border-primary/60 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
             onClick={() => scrollByPage('right')}
@@ -78,6 +83,7 @@ export const HorizontalCarousel = memo(function HorizontalCarousel({
       <div
         aria-label={ariaLabel}
         className="flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth pb-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        id={scrollRegionId}
         onKeyDown={handleKeyDown}
         ref={scrollRef}
         role="region"

@@ -193,6 +193,24 @@ Anivue uses dark CSS variables as design tokens, with deep navy application
 surfaces and purple-blue accents. Tailwind maps these tokens into semantic color
 utilities so components can stay consistent as the product grows.
 
+## Production Readiness Notes
+
+The current polish pass focuses on keyboard and assistive-technology behaviour
+across shared primitives and route surfaces. Modal focus setup is cleaned up on
+unmount, carousel controls target the actual scroll region, navbar search
+restores focus when dismissed with Escape, and viewing-history states keep a
+stable page heading across loading, empty, and populated states.
+
+Image components reserve aspect ratio, lazy load, decode asynchronously, recover
+when a failed source is replaced, and keep transient loading labels hidden from
+screen readers. Search pagination cleans up deferred scroll work on unmount and
+respects reduced-motion preferences where practical.
+
+TanStack Query remains the only remote-data cache. Persisted Zustand stores keep
+browser-only My List and Recently Viewed data isolated, with test-safe resets and
+hydration-aware rendering where persisted history affects homepage
+personalisation.
+
 
 
 Testing Jenkins webhook

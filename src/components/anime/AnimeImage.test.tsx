@@ -29,4 +29,22 @@ describe('AnimeImage', () => {
 
     expect(image).toHaveClass('opacity-100');
   });
+
+  it('recovers from an error when the image src changes', () => {
+    const { rerender } = render(
+      <AnimeImage alt="Anime cover" src="https://example.com/broken.jpg" />,
+    );
+
+    fireEvent.error(screen.getByRole('img', { name: 'Anime cover' }));
+    expect(screen.queryByRole('img')).not.toBeInTheDocument();
+
+    rerender(
+      <AnimeImage alt="Anime cover" src="https://example.com/recovered.jpg" />,
+    );
+
+    expect(screen.getByRole('img', { name: 'Anime cover' })).toHaveAttribute(
+      'src',
+      'https://example.com/recovered.jpg',
+    );
+  });
 });

@@ -35,6 +35,9 @@ export function Navbar() {
   const location = useLocation();
   const navigate = useNavigate();
   const inputRef = useRef<HTMLInputElement>(null);
+  const searchTriggerRef = useRef<HTMLButtonElement>(null);
+  const mobileSearchTriggerRef = useRef<HTMLButtonElement>(null);
+  const focusTimerRef = useRef<number | null>(null);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchValue, setSearchValue] = useState(searchParams.get('q') ?? '');
   const myListCount = useMyListStore((state) => Object.keys(state.items).length);
@@ -52,6 +55,14 @@ export function Navbar() {
       inputRef.current?.focus();
     }
   }, [isSearchOpen]);
+
+  useEffect(() => {
+    return () => {
+      if (focusTimerRef.current !== null) {
+        window.clearTimeout(focusTimerRef.current);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     const trimmedValue = debouncedSearchValue.trim();
@@ -92,6 +103,26 @@ export function Navbar() {
     if (location.pathname === '/search') {
       navigate('/search');
     }
+  }
+
+  function closeSearchAndRestoreFocus() {
+    setIsSearchOpen(false);
+    if (focusTimerRef.current !== null) {
+      window.clearTimeout(focusTimerRef.current);
+    }
+
+    focusTimerRef.current = window.setTimeout(() => {
+      const isDesktop =
+        typeof window.matchMedia === 'function' &&
+        window.matchMedia('(min-width: 768px)').matches;
+
+      if (isDesktop) {
+        searchTriggerRef.current?.focus();
+        return;
+      }
+
+      mobileSearchTriggerRef.current?.focus();
+    }, 0);
   }
 
   return (
@@ -147,7 +178,7 @@ export function Navbar() {
                   onChange={(event) => setSearchValue(event.target.value)}
                   onKeyDown={(event) => {
                     if (event.key === 'Escape') {
-                      setIsSearchOpen(false);
+                      closeSearchAndRestoreFocus();
                     }
                   }}
                   placeholder="Search anime"
@@ -175,6 +206,7 @@ export function Navbar() {
                 aria-label="Open search"
                 className="inline-flex h-10 w-10 items-center justify-center rounded-md border border-border bg-surface text-muted transition-colors hover:border-primary/60 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
                 onClick={() => setIsSearchOpen(true)}
+                ref={searchTriggerRef}
                 type="button"
               >
                 <Search aria-hidden="true" size={18} />
@@ -186,6 +218,7 @@ export function Navbar() {
             aria-label="Open mobile search"
             className="inline-flex h-10 w-10 items-center justify-center rounded-md border border-border bg-surface text-muted transition-colors hover:border-primary/60 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary md:hidden"
             onClick={() => setIsSearchOpen((value) => !value)}
+            ref={mobileSearchTriggerRef}
             type="button"
           >
             <Search aria-hidden="true" size={18} />
@@ -193,7 +226,7 @@ export function Navbar() {
           <button
             aria-expanded={isMobileNavOpen}
             aria-label="Toggle navigation"
-            className="inline-flex h-10 w-10 items-center justify-center rounded-md border border-border bg-surface text-muted transition-colors hover:border-primary/60 hover:text-foreground md:hidden"
+            className="inline-flex h-10 w-10 items-center justify-center rounded-md border border-border bg-surface text-muted transition-colors hover:border-primary/60 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary md:hidden"
             onClick={toggleMobileNav}
             type="button"
           >
@@ -225,7 +258,7 @@ export function Navbar() {
               onChange={(event) => setSearchValue(event.target.value)}
               onKeyDown={(event) => {
                 if (event.key === 'Escape') {
-                  setIsSearchOpen(false);
+                  closeSearchAndRestoreFocus();
                 }
               }}
               placeholder="Search anime"

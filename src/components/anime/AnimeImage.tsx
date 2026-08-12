@@ -1,4 +1,4 @@
-import { memo, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 
 type AnimeImageProps = {
   alt: string;
@@ -16,6 +16,10 @@ export const AnimeImage = memo(function AnimeImage({
   const [status, setStatus] = useState<'idle' | 'loaded' | 'error'>('idle');
   const canShowImage = src !== null && status !== 'error';
 
+  useEffect(() => {
+    setStatus('idle');
+  }, [src]);
+
   return (
     <div
       className={`relative overflow-hidden bg-elevated ${className}`}
@@ -27,6 +31,7 @@ export const AnimeImage = memo(function AnimeImage({
           className={`h-full w-full object-cover transition-opacity duration-300 ${
             status === 'loaded' ? 'opacity-100' : 'opacity-0'
           }`}
+          decoding="async"
           loading="lazy"
           onError={() => setStatus('error')}
           onLoad={() => setStatus('loaded')}
@@ -35,7 +40,10 @@ export const AnimeImage = memo(function AnimeImage({
       ) : null}
 
       {status !== 'loaded' ? (
-        <div className="absolute inset-0 flex items-center justify-center bg-elevated px-4 text-center text-sm text-muted">
+        <div
+          aria-hidden={status !== 'error' && src !== null}
+          className="absolute inset-0 flex items-center justify-center bg-elevated px-4 text-center text-sm text-muted"
+        >
           {status === 'error' || src === null ? 'Image unavailable' : 'Loading'}
         </div>
       ) : null}
