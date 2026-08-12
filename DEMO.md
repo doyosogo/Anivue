@@ -6,14 +6,31 @@ Anivue is a production-quality anime discovery portfolio prototype. It uses
 React, TypeScript, Vite, TanStack Query, Zustand, Tailwind CSS, Framer Motion,
 and the public AniList GraphQL API.
 
-The goal is to demonstrate how I structure a real frontend product: typed data
-access, reusable UI primitives, route-driven search, accessible modals,
-browser-only personalization, and resilient loading, empty, and error states.
+The goal is to show how I structure a real frontend product: typed data access,
+feature-based routing, reusable UI primitives, route-driven search, accessible
+modals, browser-only personalization, and resilient loading, empty, and error
+states.
 
 This is not a streaming service. Anivue does not host anime episodes and does
 not implement accounts, payments, or playback. The membership lock is a product
 prototype pattern, and supported official trailers are embedded safely from
 YouTube metadata supplied by AniList.
+
+## Before the Demo
+
+Run the local checks:
+
+```bash
+npm run build
+npm run lint
+npm run test
+```
+
+Optional local preview:
+
+```bash
+npm run preview
+```
 
 ## Suggested Live Demo Flow
 
@@ -61,3 +78,9 @@ YouTube metadata supplied by AniList.
 Production-quality anime discovery portfolio prototype built with React,
 TypeScript, Vite, TanStack Query, Zustand, Tailwind CSS, Framer Motion, and the
 AniList GraphQL API.
+
+## Suggested GitHub Topics
+
+```text
+react typescript vite tailwindcss tanstack-query zustand framer-motion anilist graphql anime portfolio frontend accessibility
+```

@@ -1,39 +1,79 @@
 # Anivue
 
-Anivue is a production-quality anime discovery portfolio prototype. It presents
-public AniList catalogue metadata through a polished streaming-platform
-interface built with React, TypeScript, TanStack Query, Zustand, Framer Motion,
-and Tailwind CSS.
+**A polished anime discovery portfolio prototype built with React, TypeScript,
+AniList GraphQL, TanStack Query, Zustand, Tailwind CSS, and Framer Motion.**
 
-The app includes a cinematic homepage, search and discovery filters, dedicated
-anime details pages, browser-only My List, Recently Viewed, lightweight
-personalised recommendations, membership-lock messaging, and safe official
-YouTube trailer embeds.
+Anivue presents public anime catalogue metadata through a premium
+streaming-platform interface. It demonstrates production-minded frontend
+architecture: typed API access, resilient async states, URL-driven search,
+accessible modals, reusable UI components, local personalization, and static
+deployment readiness.
 
-Anivue does not host anime episodes. `Watch Now` intentionally opens a reusable
-membership-lock modal that explains playback, accounts, payments, and
-registration are not implemented in this non-commercial portfolio prototype.
+Anivue does not host anime episodes. `Watch Now` intentionally opens a
+membership-lock prototype explaining that playback, accounts, payments, and
+registration are not implemented.
+
+## Live Demo
+
+Deployment is not published yet.
+
+When deployed, add the portfolio URL here:
+
+```text
+Live demo: pending deployment
+```
+
+## Screenshots
+
+Screenshots are not committed yet. Suggested captures:
+
+- Homepage with featured hero and catalogue rows
+- Search page with active filters
+- Anime details page
+- My List and Viewing History pages
+- Membership-required and trailer modals
+
+## Demo Guide
+
+For a concise recruiter walkthrough, see [DEMO.md](./DEMO.md).
+
+## Feature Overview
+
+- Cinematic homepage with featured anime sourced from AniList trending metadata
+- Independent catalogue rows for Trending, Popular, and Current Season anime
+- URL-driven search with query, genre, format, status, season, year, sort, and
+  pagination
+- Dedicated anime details pages at `/anime/:id`
+- Browser-only My List with Zustand persistence
+- Browser-only Recently Viewed history at `/history`
+- Lightweight `Because You Viewed` recommendations from AniList recommendation
+  metadata
+- Reusable membership-lock modal for unavailable playback
+- Safe official YouTube trailer modal with provider and ID validation
+- Responsive application shell, navbar search, mobile navigation, loading
+  skeletons, empty states, and error states
 
 ## Project Status
 
-Anivue is ready for portfolio presentation and static deployment. The core user
-flows are implemented and tested:
+Anivue is ready for portfolio presentation and static deployment.
 
-- Browse/search public anime metadata.
-- Open details pages directly at `/anime/:id`.
-- Save titles to My List in the current browser.
-- Review browser-only Viewing History at `/history`.
-- See AniList-powered personalised recommendations after opening details pages.
-- Open supported official YouTube trailers without hosting or proxying media.
+Implemented and tested:
 
-Known intentional limits:
+- Homepage, search, anime details, My List, Viewing History, and 404 routes
+- Public AniList GraphQL catalogue integration
+- Local browser persistence for My List and Recently Viewed
+- Accessible Modal, Button, AnimeCard, AnimeImage, and HorizontalCarousel
+  primitives
+- Production build, lint, and deterministic test suite
+- SPA route fallback config for Vercel and Netlify
 
-- No episode playback, accounts, payments, backend, or hosted anime video.
-- My List and Recently Viewed are local to the current browser.
-- AniList data, images, and trailer metadata remain owned or managed by their
-  respective sources.
+Intentional prototype boundaries:
 
-For a concise presentation walkthrough, see [DEMO.md](./DEMO.md).
+- No episode playback
+- No accounts, authentication, backend, or database
+- No payments, checkout, pricing, or membership activation
+- No hosted, downloaded, proxied, or streamed anime episodes
+- My List and Recently Viewed are stored only in the current browser
 
 ## Tech Stack
 
@@ -47,166 +87,100 @@ For a concise presentation walkthrough, see [DEMO.md](./DEMO.md).
 - Lucide React
 - ESLint + Prettier
 - Vitest + React Testing Library
-- AniList GraphQL API for public catalogue metadata
+- AniList GraphQL API
 
-## Folder Structure
+## Architecture Overview
 
 ```text
 src/
   app/
-    providers/        App-level providers such as TanStack Query
-    store/            App shell state powered by Zustand
-    App.tsx           Root application composition
+    providers/        App-level providers, including TanStack Query
+    store/            App shell UI state
     router.tsx        Route configuration
   components/
-    layout/           Reusable shell components
+    anime/            AnimeCard, AnimeImage, FeaturedHero, skeletons
+    common/           Button, Modal, Carousel, states, section headers
+    layout/           Navbar, main layout, footer
   features/
-    browse/           Browse route boundary
-    home/             Home route boundary
-    membership/       Reusable membership-lock modal and prototype disclosure
-    my-list/          My List route boundary
-    not-found/        404 route boundary
-    recently-viewed/  Browser-only viewing history and recommendations
-    trailer/          Official trailer modal, provider validation, and embed utils
+    anime/            Details route and detail query hook
+    home/             Homepage sections and catalogue hooks
+    membership/       Membership-lock modal and prototype disclosure
+    my-list/          Browser-persisted saved titles
+    recently-viewed/  Browser-persisted history and recommendations
+    search/           URL state, filters, search hook, search page
+    trailer/          Trailer modal and safe embed utilities
     watch/            Shared Watch Now and Watch Trailer controls
   services/
-    anilist/          Typed GraphQL client, operations, errors, and utilities
+    anilist/          Typed GraphQL client, queries, errors, snapshots
   styles/
     globals.css       Tailwind entrypoint and CSS design tokens
 ```
 
-## API Architecture
+### Data Access
 
-AniList catalogue metadata is accessed from the public GraphQL endpoint at
-`https://graphql.anilist.co` with the browser Fetch API and TanStack Query. Public
-anime metadata does not require user authentication, API credentials, or
-environment variables.
+AniList catalogue metadata is accessed from `https://graphql.anilist.co` with
+the browser Fetch API and TanStack Query. Public anime metadata does not require
+user authentication, API credentials, or environment variables.
 
-The AniList service layer is intentionally small:
+The AniList service layer includes:
 
-- `client.ts` sends typed GraphQL POST requests and normalizes HTTP, GraphQL,
-  network, parse, and rate-limit failures.
-- `queries.ts` stores reusable catalogue operations and a shared media fragment.
-- `types.ts` defines the AniList response shapes used by the app.
-- `season.ts` calculates the current AniList season and season year.
-- `media.ts` contains small media utilities such as preferred-title fallback.
-- `snapshot.ts` maps AniList media into compact browser-persisted snapshots.
+- Typed GraphQL request helpers
+- Shared media fragments
+- HTTP, GraphQL, parse, network, and rate-limit error handling
+- Response shape parsing before data reaches UI code
+- Current-season calculation
+- Compact media snapshots for local persistence
 
-AniList data and images remain owned or managed by their respective sources.
-Anivue uses AniList as a catalogue source and does not claim endorsement by
-AniList.
+### Local Personalization
 
-Official trailer support uses AniList trailer metadata where available, without
-treating trailers as hosted Anivue playback content. Anivue currently supports
-validated YouTube trailer IDs only, renders privacy-conscious
-`youtube-nocookie.com` embeds, and rejects unsupported providers, malformed IDs,
-or arbitrary URLs.
+My List and Recently Viewed are separate Zustand persisted stores.
 
-## Current Progress
+- `anivue-my-list` stores saved-title snapshots plus `dateAdded`
+- `anivue-recently-viewed` stores opened-details snapshots plus `viewedAt`
+- Recently Viewed is capped at 30 titles
+- Neither store sends data to an account, backend, or external service
 
-- Homepage: cinematic featured hero, catalogue carousels, Recently Viewed, and
-  Because You Viewed recommendations.
-- Details page: banner hero, poster, metadata, expandable sanitized description,
-  characters, recommendations, relations, staff, and studios.
-- Search: URL-driven catalogue discovery at `/search` with debounced title
-  queries, filters, sorting, pagination, and result cards that route to details.
-- My List: browser-only saved titles with local persistence, card controls,
-  details/hero integration, sorting, and clear confirmation.
-- Recently Viewed: browser-only history of opened details pages, surfaced on the
-  homepage and managed at `/history`.
-- Because You Viewed: a lightweight homepage row powered by AniList
-  recommendations for the most recently viewed title.
-- Prototype actions: `Watch Now` opens the shared membership-required modal,
-  trailers open in the shared official-trailer modal when supported, and `Add to
-  My List` persists locally.
+## Local Development
 
-## Membership and Trailers
+Prerequisites:
 
-The membership lock is a non-commercial prototype experience. It explains that
-episode playback and membership registration are intentionally unavailable and
-that Anivue does not host copyrighted anime episodes. No real purchase,
-checkout, account creation, or payment flow exists.
+- Node.js 20+ recommended
+- npm
 
-Shared watch controls live in `features/watch` and are used by both the
-homepage featured hero and anime details page. The controls open
-`MembershipRequiredModal` for locked playback and `TrailerModal` for supported
-official promotional trailers.
+Install dependencies:
 
-Trailer embeds are created only after provider and ID validation. Supported
-trailer metadata may render in an accessible modal iframe; missing, unsupported,
-or malformed trailer metadata leaves the trailer action disabled.
+```bash
+npm install
+```
 
-## Search
-
-Search state is stored in URL query parameters so pages can be refreshed,
-shared, and navigated with browser back/forward. Supported parameters include
-`q`, `genre`, `format`, `status`, `season`, `year`, `sort`, and `page`.
-
-Supported filters:
-
-- Genre: a curated AniList-compatible anime genre list
-- Format: `TV`, `TV_SHORT`, `MOVIE`, `SPECIAL`, `OVA`, `ONA`, `MUSIC`
-- Status: `FINISHED`, `RELEASING`, `NOT_YET_RELEASED`, `CANCELLED`, `HIATUS`
-- Season: `WINTER`, `SPRING`, `SUMMER`, `FALL`
-- Year: validated numeric range
-- Sort: relevance for title searches, plus popularity, trending, score, start
-  date, and romaji title sorting
-
-Navbar and search-page text input is debounced before updating `/search`, while
-pressing Enter submits immediately. Search uses TanStack Query and the existing
-AniList Fetch client, passes cancellation signals through requests, and uses
-standard Previous/Next pagination through the `page` URL parameter.
-
-## My List
-
-My List does not require an account and does not use a backend. Saved titles are
-stored only in the current browser with Zustand persist under the
-`anivue-my-list` localStorage key. Clearing browser data removes the saved list.
-
-The persisted data is a compact catalogue snapshot rather than the full AniList
-details response. It stores stable rendering fields such as id, title, cover and
-banner images, score, episode count, status, format, season/year, genres, trailer
-summary, and date added. This lets `/my-list` render without issuing one AniList
-request per saved title.
-
-Persistence includes a version and a safe migration fallback so malformed or
-older local data does not crash the app.
-
-## Recently Viewed
-
-Recently Viewed is separate from My List. It records a title only after a valid
-anime details page loads at `/anime/:id`; rendering or hovering an AnimeCard does
-not add anything to history. This is not episode progress, not Continue
-Watching, and not playback tracking.
-
-Viewing history is stored only in the current browser with Zustand persist under
-the `anivue-recently-viewed` localStorage key. No history is sent to an Anivue
-account or backend. Clearing browser storage removes it.
-
-The persisted history stores compact AniList catalogue snapshots plus `viewedAt`
-timestamps, capped at 30 titles. Recording the same title later updates
-`viewedAt` and moves it to the front; rapid duplicate records are ignored to keep
-development Strict Mode stable.
-
-The homepage shows a Recently Viewed row only when browser history exists, using
-stored snapshots without refetching each title. `/history` provides a dedicated
-Viewing History page with count, sorting, individual removal, and clear-all
-confirmation.
-
-The personalised `Because You Viewed [Anime Title]` row uses the most recently
-viewed AniList ID to request a focused recommendation set from AniList. Results
-exclude adult entries, the seed title, duplicates, and invalid recommendation
-items.
-
-## Development Scripts
+Start the dev server:
 
 ```bash
 npm run dev
+```
+
+Build for production:
+
+```bash
 npm run build
+```
+
+Preview the production build locally:
+
+```bash
+npm run preview
+```
+
+## Testing and Validation
+
+```bash
 npm run lint
 npm run test
-npm run format
+npm run build
 ```
+
+The automated test suite mocks AniList requests and does not make live network
+calls to AniList.
 
 ## Deployment
 
@@ -214,58 +188,45 @@ Anivue is a Vite single-page application. Build output is emitted to `dist/`.
 
 Vercel:
 
-```bash
-npm run build
-```
-
-Use the default Vite/static settings. `vercel.json` rewrites all routes to `/`
-so direct navigation and refreshes work for `/search`, `/my-list`, `/history`,
-and `/anime/:id`.
+- Build command: `npm run build`
+- Output directory: `dist`
+- `vercel.json` rewrites all routes to `/` so direct navigation and refreshes
+  work for `/search`, `/my-list`, `/history`, and `/anime/:id`
 
 Netlify:
 
-```bash
-npm run build
+- Build command: `npm run build`
+- Publish directory: `dist`
+- `public/_redirects` is copied into `dist/` and rewrites all routes to
+  `/index.html`
+
+Other static hosts need the same SPA fallback rule: serve `index.html` for
+unknown routes while leaving built assets untouched.
+
+## Privacy and Prototype Limits
+
+Anivue is a non-commercial portfolio prototype.
+
+- It displays public anime metadata and official promotional trailer embeds.
+- It does not provide anime episode streaming.
+- It does not create user accounts or process payments.
+- My List and Recently Viewed are stored only in the current browser.
+- Clearing browser storage removes local saved titles and viewing history.
+
+## Attribution
+
+Anime metadata, images, and trailer metadata are provided by AniList and remain
+owned or managed by their respective sources. Anivue uses AniList as a public
+catalogue source and does not claim endorsement by AniList.
+
+## Suggested GitHub Repository Description
+
+Production-quality anime discovery portfolio prototype built with React,
+TypeScript, Vite, TanStack Query, Zustand, Tailwind CSS, Framer Motion, and the
+AniList GraphQL API.
+
+## Suggested Topics
+
+```text
+react typescript vite tailwindcss tanstack-query zustand framer-motion anilist graphql anime portfolio frontend accessibility
 ```
-
-Publish `dist/`. The `public/_redirects` file is copied into the build and
-rewrites all routes to `/index.html` for SPA refresh safety.
-
-Other static hosts need the same fallback rule: serve `index.html` for unknown
-paths while leaving built assets untouched.
-
-## Final QA Checklist
-
-- Production build, lint, and test suite pass locally.
-- Automated tests mock AniList requests; the test suite does not make live
-  AniList calls.
-- Direct SPA routes are covered by Vercel and Netlify fallback config.
-- Demo-critical routes: `/`, `/search`, `/my-list`, `/history`, `/anime/:id`,
-  and unknown routes.
-- Browser-only persistence is limited to My List and Recently Viewed.
-- Visible copy avoids implying real streaming, accounts, payments, or hosted
-  anime episodes.
-
-## Design System
-
-Anivue uses dark CSS variables as design tokens, with deep navy application
-surfaces and purple-blue accents. Tailwind maps these tokens into semantic color
-utilities so components can stay consistent as the product grows.
-
-## Production Readiness Notes
-
-The current polish pass focuses on keyboard and assistive-technology behaviour
-across shared primitives and route surfaces. Modal focus setup is cleaned up on
-unmount, carousel controls target the actual scroll region, navbar search
-restores focus when dismissed with Escape, and viewing-history states keep a
-stable page heading across loading, empty, and populated states.
-
-Image components reserve aspect ratio, lazy load, decode asynchronously, recover
-when a failed source is replaced, and keep transient loading labels hidden from
-screen readers. Search pagination cleans up deferred scroll work on unmount and
-respects reduced-motion preferences where practical.
-
-TanStack Query remains the only remote-data cache. Persisted Zustand stores keep
-browser-only My List and Recently Viewed data isolated, with test-safe resets and
-hydration-aware rendering where persisted history affects homepage
-personalisation.
