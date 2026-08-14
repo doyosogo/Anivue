@@ -1,5 +1,7 @@
 # Anivue Demo Guide
 
+Live demo: [https://anivue.vercel.app](https://anivue.vercel.app)
+
 ## 60-Second Recruiter Script
 
 Anivue is a production-quality anime discovery portfolio prototype. It uses
@@ -34,6 +36,7 @@ npm run preview
 
 Deployment readiness:
 
+- Live deployment: [https://anivue.vercel.app](https://anivue.vercel.app)
 - Vercel uses `vercel.json` to rewrite SPA routes to `/`.
 - Netlify uses `public/_redirects`, copied into `dist/`, to rewrite SPA routes
   to `/index.html`.
@@ -42,7 +45,8 @@ Deployment readiness:
 
 ## Suggested Live Demo Flow
 
-1. Start on `/` and show the featured hero plus independent catalogue rows.
+1. Open [https://anivue.vercel.app](https://anivue.vercel.app) and show the
+   featured hero plus independent catalogue rows.
 2. Open `Watch Now` to show the membership-required modal and prototype limits.
 3. Open an official trailer when available, then close the modal.
 4. Search from the navbar, then show `/search` filters, sorting, and pagination.
@@ -59,7 +63,8 @@ Deployment readiness:
 ## Screenshot Checklist
 
 Save real screenshots in `docs/screenshots/` after loading either a production
-preview or the deployed site.
+preview or the deployed site at
+[https://anivue.vercel.app](https://anivue.vercel.app).
 
 - Homepage desktop
 - Homepage mobile
@@ -100,6 +105,12 @@ preview or the deployed site.
 Production-quality anime discovery portfolio prototype built with React,
 TypeScript, Vite, TanStack Query, Zustand, Tailwind CSS, Framer Motion, and the
 AniList GraphQL API.
+
+## Suggested GitHub Website URL
+
+```text
+https://anivue.vercel.app
+```
 
 ## Suggested GitHub Topics
 

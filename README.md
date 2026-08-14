@@ -15,13 +15,10 @@ registration are not implemented.
 
 ## Live Demo
 
-Deployment is not published yet.
+Live demo: [https://anivue.vercel.app](https://anivue.vercel.app)
 
-When deployed, add the portfolio URL here:
-
-```text
-Live demo: pending deployment
-```
+Deployment status: published on Vercel as a static Vite SPA. Direct route
+refreshes are supported through the repository `vercel.json` rewrite.
 
 ## Screenshots
 
@@ -206,7 +203,6 @@ Before publishing:
 - Confirm My List and Recently Viewed persist after refresh in the same browser
 - Confirm visible copy does not imply real streaming, accounts, payments, or
   hosted anime episodes
-- Add the deployed URL to the Live Demo section after deployment
 - Capture real screenshots into `docs/screenshots/`
 
 Vercel:
@@ -247,6 +243,12 @@ catalogue source and does not claim endorsement by AniList.
 Production-quality anime discovery portfolio prototype built with React,
 TypeScript, Vite, TanStack Query, Zustand, Tailwind CSS, Framer Motion, and the
 AniList GraphQL API.
+
+## Suggested GitHub Website URL
+
+```text
+https://anivue.vercel.app
+```
 
 ## Suggested Topics
 
