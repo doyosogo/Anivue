@@ -25,13 +25,19 @@ Live demo: pending deployment
 
 ## Screenshots
 
-Screenshots are not committed yet. Suggested captures:
+Screenshots are not committed yet. Store real captures in
+[`docs/screenshots/`](./docs/screenshots/).
 
-- Homepage with featured hero and catalogue rows
-- Search page with active filters
+Suggested captures:
+
+- Homepage desktop
+- Homepage mobile
+- Search results with active filters
 - Anime details page
-- My List and Viewing History pages
-- Membership-required and trailer modals
+- Membership-required modal
+- Official trailer modal when a supported trailer is available
+- My List
+- Viewing History
 
 ## Demo Guide
 
@@ -185,6 +191,23 @@ calls to AniList.
 ## Deployment
 
 Anivue is a Vite single-page application. Build output is emitted to `dist/`.
+
+### Deployment Checklist
+
+Before publishing:
+
+- Run `npm run build`
+- Run `npm run lint`
+- Run `npm run test`
+- Preview the production build with `npm run preview` when local port binding is
+  available
+- Verify direct route refreshes for `/`, `/search`, `/my-list`, `/history`,
+  `/anime/1`, and an unknown route
+- Confirm My List and Recently Viewed persist after refresh in the same browser
+- Confirm visible copy does not imply real streaming, accounts, payments, or
+  hosted anime episodes
+- Add the deployed URL to the Live Demo section after deployment
+- Capture real screenshots into `docs/screenshots/`
 
 Vercel:
 

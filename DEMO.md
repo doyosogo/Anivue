@@ -32,6 +32,14 @@ Optional local preview:
 npm run preview
 ```
 
+Deployment readiness:
+
+- Vercel uses `vercel.json` to rewrite SPA routes to `/`.
+- Netlify uses `public/_redirects`, copied into `dist/`, to rewrite SPA routes
+  to `/index.html`.
+- Verify direct refreshes for `/`, `/search`, `/my-list`, `/history`,
+  `/anime/1`, and an unknown route after deployment.
+
 ## Suggested Live Demo Flow
 
 1. Start on `/` and show the featured hero plus independent catalogue rows.
@@ -47,6 +55,20 @@ npm run preview
 8. Return home to show Recently Viewed and Because You Viewed sections after
    history exists.
 9. Navigate to `/not-a-real-route` to show the 404 route.
+
+## Screenshot Checklist
+
+Save real screenshots in `docs/screenshots/` after loading either a production
+preview or the deployed site.
+
+- Homepage desktop
+- Homepage mobile
+- Search results with active filters
+- Anime details page
+- Membership-required modal
+- Official trailer modal when a supported trailer is available
+- My List
+- Viewing History
 
 ## Technical Talking Points
 
