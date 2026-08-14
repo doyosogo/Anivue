@@ -22,18 +22,25 @@ refreshes are supported through the repository `vercel.json` rewrite.
 
 ## Screenshots
 
-Screenshots are not committed yet. Store real captures in
+Real captures from the deployed prototype are stored in
 [`docs/screenshots/`](./docs/screenshots/).
 
-Suggested captures:
+| Homepage | Anime Details |
+| --- | --- |
+| ![Anivue homepage showing the cinematic featured anime hero and trending catalogue row.](./docs/screenshots/homepage-desktop.png) | ![Anivue anime details page showing metadata, overview, characters, and recommendations.](./docs/screenshots/anime-details.png) |
 
-- Homepage desktop
-- Homepage mobile
+| Membership Prototype | Official Trailer |
+| --- | --- |
+| ![Anivue membership-required modal explaining the portfolio prototype playback limit.](./docs/screenshots/membership-modal.png) | ![Anivue official trailer modal using a supported YouTube embed.](./docs/screenshots/trailer-modal.png) |
+
+| My List |
+| --- |
+| ![Anivue My List page showing locally saved anime titles.](./docs/screenshots/my-list.png) |
+
+Additional recommended captures for a fuller portfolio gallery:
+
+- Mobile homepage
 - Search results with active filters
-- Anime details page
-- Membership-required modal
-- Official trailer modal when a supported trailer is available
-- My List
 - Viewing History
 
 ## Demo Guide

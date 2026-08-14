@@ -6,15 +6,18 @@ Do not commit placeholder or generated images. Capture real screenshots from a
 local production preview or deployed build after the app has loaded live AniList
 metadata.
 
-Recommended filenames:
+Committed screenshots:
 
 - `homepage-desktop.png`
-- `homepage-mobile.png`
-- `search-results.png`
 - `anime-details.png`
 - `membership-modal.png`
 - `trailer-modal.png`
 - `my-list.png`
+
+Recommended additional filenames:
+
+- `homepage-mobile.png`
+- `search-results.png`
 - `viewing-history.png`
 
 Recommended capture sizes:
